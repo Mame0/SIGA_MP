@@ -140,3 +140,78 @@ WHERE NOT EXISTS (SELECT 1 FROM `mp_admi_conf` WHERE `nomb_conf` = 'VACA_TOPE_FL
 INSERT INTO `mp_admi_conf` (`nomb_conf`, `desc_conf`, `valo_conf`)
 SELECT 'VACA_DIAS_PERIODO', 'Dias de vacaciones asignados por periodo', '30'
 WHERE NOT EXISTS (SELECT 1 FROM `mp_admi_conf` WHERE `nomb_conf` = 'VACA_DIAS_PERIODO');
+
+-- =====================================================================
+--  FASE 5 — Integración al menú (Abastecimiento) y permisos
+--  El nodo "Abastecimiento" (mp_admi_subm, nomb='CONST_SUBM_ABASTECIMIENTO',
+--  iden_padr=0, iden_menu=1; típicamente iden_subm=83) se deriva por nombre.
+--  Se cuelga de él un grupo "Vacaciones Conductores" con 5 páginas.
+--  nomb_subm en texto plano (no 'CONST_') para no depender de los
+--  archivos de idioma: home.php solo traduce los que empiezan con 'CONST_'.
+--  Todo idempotente: puede ejecutarse varias veces sin duplicar.
+-- =====================================================================
+
+-- id del nodo "Abastecimiento" (derivado por nombre; fallback a 83)
+SET @abast := (SELECT `iden_subm` FROM `mp_admi_subm`
+               WHERE `nomb_subm`='CONST_SUBM_ABASTECIMIENTO' AND `iden_padr`=0
+               ORDER BY `iden_subm` LIMIT 1);
+SET @abast := COALESCE(@abast, 83);
+
+-- 1) Grupo contenedor colgando de Abastecimiento
+INSERT INTO `mp_admi_subm` (`iden_menu`,`nomb_subm`,`icon_subm`,`page_subm`,`iden_padr`,`orde_subm`,`esta_subm`)
+SELECT 1,'Vacaciones Conductores','calendar','',@abast,7,1
+WHERE NOT EXISTS (SELECT 1 FROM `mp_admi_subm` WHERE `nomb_subm`='Vacaciones Conductores' AND `iden_padr`=@abast);
+
+-- id del grupo recién creado (o existente)
+SET @vaca_grp := (SELECT `iden_subm` FROM `mp_admi_subm`
+                  WHERE `nomb_subm`='Vacaciones Conductores' AND `iden_padr`=@abast
+                  ORDER BY `iden_subm` LIMIT 1);
+
+-- 2) Páginas del módulo como hijos del grupo (idempotentes por page_subm)
+INSERT INTO `mp_admi_subm` (`iden_menu`,`nomb_subm`,`icon_subm`,`page_subm`,`iden_padr`,`orde_subm`,`esta_subm`)
+SELECT 1,'Listado de conductores','users','vacaciones_listado.php',@vaca_grp,1,1
+WHERE NOT EXISTS (SELECT 1 FROM `mp_admi_subm` WHERE `page_subm`='vacaciones_listado.php');
+
+INSERT INTO `mp_admi_subm` (`iden_menu`,`nomb_subm`,`icon_subm`,`page_subm`,`iden_padr`,`orde_subm`,`esta_subm`)
+SELECT 1,'Programación de vacaciones','calendar','vacaciones_registro.php',@vaca_grp,2,1
+WHERE NOT EXISTS (SELECT 1 FROM `mp_admi_subm` WHERE `page_subm`='vacaciones_registro.php');
+
+INSERT INTO `mp_admi_subm` (`iden_menu`,`nomb_subm`,`icon_subm`,`page_subm`,`iden_padr`,`orde_subm`,`esta_subm`)
+SELECT 1,'Calendario de flota','grid','vacaciones_calendario.php',@vaca_grp,3,1
+WHERE NOT EXISTS (SELECT 1 FROM `mp_admi_subm` WHERE `page_subm`='vacaciones_calendario.php');
+
+INSERT INTO `mp_admi_subm` (`iden_menu`,`nomb_subm`,`icon_subm`,`page_subm`,`iden_padr`,`orde_subm`,`esta_subm`)
+SELECT 1,'Historial de cambios','clock','vacaciones_detalle.php',@vaca_grp,4,1
+WHERE NOT EXISTS (SELECT 1 FROM `mp_admi_subm` WHERE `page_subm`='vacaciones_detalle.php');
+
+INSERT INTO `mp_admi_subm` (`iden_menu`,`nomb_subm`,`icon_subm`,`page_subm`,`iden_padr`,`orde_subm`,`esta_subm`)
+SELECT 1,'Reporte de vacaciones','file-text','vacaciones_reporte.php',@vaca_grp,5,1
+WHERE NOT EXISTS (SELECT 1 FROM `mp_admi_subm` WHERE `page_subm`='vacaciones_reporte.php');
+
+-- =====================================================================
+--  PERMISOS (mp_admi_role_subm): otorga la ruta completa
+--  (nodo Abastecimiento + grupo + sus 5 páginas) al rol indicado.
+--  Para que el grupo aparezca, el rol debe tener también el nodo padre.
+--  Repite el bloque cambiando @rol para cada rol que deba ver el módulo.
+-- =====================================================================
+
+-- >>> Rol Admin (2) — siempre administra el sistema
+SET @rol := 2;
+INSERT INTO `mp_admi_role_subm` (`iden_role`,`iden_subm`,`esta_perm`,`digi_perm`,`fdig_perm`)
+SELECT @rol, s.`iden_subm`, 1, 0, DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+FROM `mp_admi_subm` s
+WHERE (s.`iden_subm`=@abast OR s.`iden_subm`=@vaca_grp OR s.`iden_padr`=@vaca_grp)
+  AND NOT EXISTS (SELECT 1 FROM `mp_admi_role_subm` r
+                  WHERE r.`iden_role`=@rol AND r.`iden_subm`=s.`iden_subm`);
+
+-- >>> Rol adicional de RR.HH. (encargada de vacaciones)
+--     Descomenta y reemplaza 9 por el iden_role correcto
+--     (p. ej. 9 = Planillas, 25 = Información Personal - Admin, 8 = Asistencias).
+--     Para ver los roles:  SELECT iden_role, nomb_role FROM mp_admi_role ORDER BY iden_role;
+-- SET @rol := 9;
+-- INSERT INTO `mp_admi_role_subm` (`iden_role`,`iden_subm`,`esta_perm`,`digi_perm`,`fdig_perm`)
+-- SELECT @rol, s.`iden_subm`, 1, 0, DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+-- FROM `mp_admi_subm` s
+-- WHERE (s.`iden_subm`=@abast OR s.`iden_subm`=@vaca_grp OR s.`iden_padr`=@vaca_grp)
+--   AND NOT EXISTS (SELECT 1 FROM `mp_admi_role_subm` r
+--                   WHERE r.`iden_role`=@rol AND r.`iden_subm`=s.`iden_subm`);

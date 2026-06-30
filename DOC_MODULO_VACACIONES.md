@@ -3,7 +3,7 @@
 Documento de diseño e implementación. Módulo interno dentro de **Abastecimiento** del sistema SIGA (MPFN-DF Arequipa).
 Operado **exclusivamente por la encargada de RR.HH.** (no hay autoservicio para conductores). Prioridad: velocidad de registro, flexibilidad total y control del impacto operativo de la flota.
 
-> Estado: **Fases 0 y 1 implementadas y verificadas.** Fase 0 = tablas + catálogo + config. Fase 1 = `vacaciones_controller.php` (sincronizar/buscar/listar conductores) + `vacaciones_listado.php`; 35 conductores sincronizados sin duplicar. Resto de fases pendientes. Ver convenciones generales del sistema en `CLAUDE.md`.
+> Estado: **Fases 0–5 implementadas (módulo completo).** Fase 0 = tablas + catálogo + config. Fase 1 = sincronizar/buscar/listar conductores + `vacaciones_listado.php`. Fase 2 = periodos + tramos con control de saldo + `vacaciones_registro.php`. Fase 3 = motor de tope de flota (`vaca_validar_cupo` integrado en `guardar_programacion` + acción `calendario_ocupacion`) + `vacaciones_calendario.php`; verificado: 5.º conductor el mismo día bloqueado con lista de fechas, calendario muestra ocupación y nombres. Fase 4 = reprogramación en cadena atómica (acción `reprogramar`) + anulación de tramo (`anular_tramo`) + lectura de auditoría (`obtener_historial`), todo con escritura en `mp_vaca_historial`; UI de reprogramar/anular en `vacaciones_registro.php` (modo "Reprogramar todo" + botón anular por tramo) y línea de tiempo en `vacaciones_detalle.php`. Fase 5 = alta de menú/submenú colgando de **Abastecimiento** (`mp_admi_subm.iden_subm=83`, grupo "Vacaciones Conductores" con 5 páginas) + permisos en `mp_admi_role_subm` (rol Admin=2; bloque parametrizado para el rol de RR.HH.) en `DB_SCHEMA_VACACIONES.sql`, y reporte formato Excel (§8) con exportación `.xls` e impresión en `vacaciones_reporte.php`. **Nota:** el SQL de Fase 5 (menú + permisos) debe ejecutarse en la BD para que el módulo aparezca en el menú. Ver convenciones generales del sistema en `CLAUDE.md`.
 
 ---
 
@@ -242,8 +242,9 @@ vacaciones_listado.php      -- grilla de conductores: nombre, cargo, régimen, p
 vacaciones_calendario.php   -- calendario dinámico de concurrencia (reemplaza la "sábana" del Excel)
 vacaciones_registro.php     -- alta/reprogramación de tramos de un conductor (typeahead + selección de periodo)
 vacaciones_detalle.php      -- historial de cambios (mp_vaca_historial) por conductor/periodo
+vacaciones_reporte.php      -- reporte formato Excel (§8): una fila por tramo, con filtros + exportación .xls e impresión
 vacaciones_controller.php   -- API JSON
-DB_SCHEMA_VACACIONES.sql    -- DDL de las 7 tablas/objetos
+DB_SCHEMA_VACACIONES.sql    -- DDL de las 7 tablas/objetos + alta de menú/permisos (Fase 5)
 ```
 Más alta de menú/submenú en `mp_admi_menu` / `mp_admi_subm` colgando de **Abastecimiento**, con su `iden_subm` asignado a los roles de RR.HH. en `mp_admi_role_subm`.
 
