@@ -1,0 +1,8 @@
+FONTS:
+Array
+(
+    [0] => C:\xampp\htdocs\siga\classes\jpgraph\src\fonts\DejaVuSans-Bold.ttf
+    [1] => C:\xampp\htdocs\siga\classes\jpgraph\src\fonts\DejaVuSans-BoldOblique.ttf
+    [2] => C:\xampp\htdocs\siga\classes\jpgraph\src\fonts\DejaVuSans-Oblique.ttf
+    [3] => C:\xampp\htdocs\siga\classes\jpgraph\src\fonts\DejaVuSans.ttf
+)

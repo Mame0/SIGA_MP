@@ -1,0 +1,813 @@
+{
+    "locales": [
+        {
+            "id_almacen": 1,
+            "nomb_almacen": "Almacén Principal",
+            "ubig_almacen": "Sede Central Arequipa",
+            "esta_almacen": 1
+        }
+    ],
+    "bienes_count": 100,
+    "bienes_sample": [
+        {
+            "id_bien": 1815,
+            "codi_bien": null,
+            "desc_bien": "ACEITE USOS MULTIPLES 3 EN 1",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "3 EN 1",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1816,
+            "codi_bien": null,
+            "desc_bien": "ADITIVO CHEMA PRIMER X 1 LT",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "CHEMA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1817,
+            "codi_bien": null,
+            "desc_bien": "AMOLADORA ANGULAR  - GWS 2200-180",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "BOSCH",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1818,
+            "codi_bien": null,
+            "desc_bien": "AMOLADORA ANGULAR  A BATERIA  GWS 18V-10P",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "BOSCH",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1819,
+            "codi_bien": null,
+            "desc_bien": "ANAQUELES METALICOS   2X90X30 - (5 BANDEJAS)",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "NACIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1820,
+            "codi_bien": "208400040652",
+            "desc_bien": "ANILLO DE CERA CON GUIA REFORZADA PARA INODORO",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "METUSA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1821,
+            "codi_bien": null,
+            "desc_bien": "ASIENTO PARA BAÑO BLANCO",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "GO GREEN",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1822,
+            "codi_bien": "208400210006",
+            "desc_bien": "ASIENTO PARA INODORO LIVIANO PP",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "FIORI",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1823,
+            "codi_bien": null,
+            "desc_bien": "ASIENTO PARA INODORO MODELO SIFON-JET FLAMIGO",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "MELAMINEX",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1824,
+            "codi_bien": null,
+            "desc_bien": "BALDE DE PLASTICO DE 11 Lt",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "NACIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1825,
+            "codi_bien": null,
+            "desc_bien": "BALDOSAS CIELO RAZO 603X603X7mm -  10 UNID(CAJA)",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "ACUSTIC REY",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1826,
+            "codi_bien": "731500030073",
+            "desc_bien": "BARNIZ T-81 CAOBA",
+            "unid_bien": "GALON",
+            "marc_bien": "TEKNO",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1827,
+            "codi_bien": "731500030042",
+            "desc_bien": "BARNIZ T-81 TRANSPARENTE",
+            "unid_bien": "GALON",
+            "marc_bien": "TEKNO",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1828,
+            "codi_bien": null,
+            "desc_bien": "BARRAS DE SEGURIDAD",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "NACIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1829,
+            "codi_bien": null,
+            "desc_bien": "BOLLA DE TANQUE DE AGUA DE 2\" USADA",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "NACIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1830,
+            "codi_bien": "022000250170",
+            "desc_bien": "BROCA PARA CEMENTO 1\/18\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "BOSCH",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1831,
+            "codi_bien": "022900050041",
+            "desc_bien": "BROCA PARA CEMENTO 5\/16\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TRUPER",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1832,
+            "codi_bien": null,
+            "desc_bien": "BROCAS COMBINATION DRILL & TAP BIT X6 PCS",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TITANIUM",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1833,
+            "codi_bien": null,
+            "desc_bien": "BROCAS X 6 PCS   CYL -1",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "BOSCH",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1834,
+            "codi_bien": "737100020008",
+            "desc_bien": "BROCHA  DE 1\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "AGUILA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1835,
+            "codi_bien": "737100020016",
+            "desc_bien": "BROCHA  DE 2\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "C&A",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1836,
+            "codi_bien": null,
+            "desc_bien": "BROCHA DE 2 1\/2\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TUMI",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1837,
+            "codi_bien": "737100020003",
+            "desc_bien": "BROCHA DE 3\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "C&A",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1838,
+            "codi_bien": "737100020018",
+            "desc_bien": "BROCHA DE 4\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TUMI",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1839,
+            "codi_bien": "737100020004",
+            "desc_bien": "BROCHA DE 4\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "NACIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1840,
+            "codi_bien": null,
+            "desc_bien": "CAJA DE BROCAS X 15 PCS HSS-Co DIN 338   1-13X0,5mm",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "DEBOR GERMANY",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1841,
+            "codi_bien": null,
+            "desc_bien": "CAJA DE BROCAS X 6 PCS - AVELLANADOR",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "NACIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1842,
+            "codi_bien": null,
+            "desc_bien": "CANALETAS CON PEGAMENTO 14mmX24mm X 25 UND",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "HARDMAN",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1843,
+            "codi_bien": "154800010007",
+            "desc_bien": "CANDADO 114-70MM CORTINA ANTIPALANCA",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "YALE",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1844,
+            "codi_bien": "154800010003",
+            "desc_bien": "CANDADO X50MM SERIE Y110-50",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "YALE",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1845,
+            "codi_bien": null,
+            "desc_bien": "CAÑO DE LAVADERO DE 1\/2\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TEKNI CENTRO",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1846,
+            "codi_bien": null,
+            "desc_bien": "CAÑO DE LAVADERO DE 1\/2\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "GRIFERIA NT",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1847,
+            "codi_bien": null,
+            "desc_bien": "CAÑO LAVATORIO X 2 UND",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "FORTALY PREMIUM",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1848,
+            "codi_bien": null,
+            "desc_bien": "CATALIZADOR EPOXICO - 0.900 LT",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "ANYPSA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1849,
+            "codi_bien": "133000080061",
+            "desc_bien": "CERA EN PASTA NEUTRAL X 4LT",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "LOSARO",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1850,
+            "codi_bien": "154900030002",
+            "desc_bien": "CERRADURA ALTA SEGURIDAD 3 GOLPES 911 - PIVOTES DE 19mm",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TRAVEX",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1851,
+            "codi_bien": null,
+            "desc_bien": "CERRADURA DE MANIJA  LINEA BRISA - BRONCE ANTIGUO",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "CANTOL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1852,
+            "codi_bien": null,
+            "desc_bien": "CERRADURA DORMITORIO AI 2100 (PERILLA)",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TRAVEX",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1853,
+            "codi_bien": "154900030002_2",
+            "desc_bien": "CERRADURA MECANICA 3 GOLPES  911 - PIVOTES DE 19mm",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TRAVEX",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1854,
+            "codi_bien": "154900030011",
+            "desc_bien": "CERRADURA MECÁNICA CON TRAMPA FRONTAL PARA CAJONERA",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "VENEZIA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1855,
+            "codi_bien": "154900030110",
+            "desc_bien": "CERRADURAS PARA ESCRITORIOS 19XL 22mm",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "COA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1856,
+            "codi_bien": "801600120033",
+            "desc_bien": "CINTA ADHESIA ANTIDESLIZANTE DE 5cm X 18m",
+            "unid_bien": "METRO",
+            "marc_bien": "ASTARA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1857,
+            "codi_bien": null,
+            "desc_bien": "CINTA DE MONTAJE DOBLE CARA 19mmX10m",
+            "unid_bien": "METRO",
+            "marc_bien": "TRUPER",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1858,
+            "codi_bien": "710300010068",
+            "desc_bien": "CINTA DE MONTAJE DOBLE CARA 19mmX5m",
+            "unid_bien": "METRO",
+            "marc_bien": "TRUPER",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1859,
+            "codi_bien": null,
+            "desc_bien": "CINTA MASKINGTAPE DE 2\" X 40 yds",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "SHURPTAPE",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1860,
+            "codi_bien": "70400190226",
+            "desc_bien": "CINTA TEFLON",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "C&A",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1861,
+            "codi_bien": null,
+            "desc_bien": "CODO 45° DE 1\/2\" bls x50 UND",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "IPS-AR",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1862,
+            "codi_bien": null,
+            "desc_bien": "CODO 45° DE 3\/4\" bls X30",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "IPS-AR",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1863,
+            "codi_bien": null,
+            "desc_bien": "CODO 90° DE 3\/4\" bls x30 UND",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "IPS-AR",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1864,
+            "codi_bien": null,
+            "desc_bien": "CODO DE 90 DE 1\/2\" X 50 UND",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "IPS-AR",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1865,
+            "codi_bien": null,
+            "desc_bien": "CODO DE 1\/2\" SIN ROSCA",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "IPS-AR",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1866,
+            "codi_bien": null,
+            "desc_bien": "CODO DE 90° SIN ROSCA DE 1\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "IPS-AR",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1867,
+            "codi_bien": "00487",
+            "desc_bien": "COMPRENSORA DE AIRE MODELO BYV-O.17\/8A-SHIPSOL",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "PITBULL PROFESIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1868,
+            "codi_bien": null,
+            "desc_bien": "CONOS DE SEGURIDAD",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "NACIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1869,
+            "codi_bien": "64.61.0005.2151",
+            "desc_bien": "CONTENEDORES DE POLIETILENO 120 L CON RUEDAS Y PEDAL  ROJO",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "BASA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1870,
+            "codi_bien": null,
+            "desc_bien": "CUCHILLAS PARA CUTTER X 10 UND   18mm",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TRUPER",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1871,
+            "codi_bien": null,
+            "desc_bien": "CUELLO DE ERA PARA INODORO SIN GUIA",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TREBOL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1872,
+            "codi_bien": "890400010203",
+            "desc_bien": "CUERINA SINTÉTICA X50m (ROLLO)",
+            "unid_bien": "METRO",
+            "marc_bien": "NACIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1873,
+            "codi_bien": "890400010207",
+            "desc_bien": "CUERINA SINTÉTICA X50m (ROLLO)",
+            "unid_bien": "METRO",
+            "marc_bien": "NACIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1874,
+            "codi_bien": null,
+            "desc_bien": "DESAGUE LARGO BRONCE CROMADO  1 1\/4X8",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "HYDRA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1875,
+            "codi_bien": "962700010009",
+            "desc_bien": "DESAGUE LARGO BRONCE CROMADO CON REJILLA 1 1\/4X8",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "METUSA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1876,
+            "codi_bien": null,
+            "desc_bien": "DISCOS DE CORTE  BNA 12 -  115.0x1.0x22.2mm",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "NORTON",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1877,
+            "codi_bien": "208400040661",
+            "desc_bien": "DISPENSADOR DE JABON",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "EBRIEL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1878,
+            "codi_bien": "208400040662",
+            "desc_bien": "DISPENSADOR DE TOALLA PALANCA - BLANCO",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "EBRIEL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1879,
+            "codi_bien": "208400040672",
+            "desc_bien": "DISPENSADOR HIGIENICO JUMBO- BLANCO",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "EBRIEL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1880,
+            "codi_bien": "4580000170045",
+            "desc_bien": "ELECTRONIVEL PARA TANQUES Y CISTERNAS 220V",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "C&A",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1881,
+            "codi_bien": null,
+            "desc_bien": "ESCUADRA DE CARPINTERO DE ALUMINIO DE 7\" - 15131",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TRUPER",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1882,
+            "codi_bien": null,
+            "desc_bien": "ESCUADRA DE COMBINACION DE 12\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TRUPER",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1883,
+            "codi_bien": null,
+            "desc_bien": "ESCUADRA FALSA MANGO DE ALUMINIO DE 9\" - 14385",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TRUPER",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1884,
+            "codi_bien": "731500010854",
+            "desc_bien": "ESMALTE ACRILICO EN AEROSOL NEGRO MATE",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "ULTRACRAFT",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1885,
+            "codi_bien": "731500020064",
+            "desc_bien": "ESMALTE ACRILICO EN AEROSOL TRANSPARENTE",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "ULTRACRAFT",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1886,
+            "codi_bien": "203400120202",
+            "desc_bien": "ESMALTE EPOXICO -3\/4 GALON",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "ANYPSA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1887,
+            "codi_bien": "731500010080",
+            "desc_bien": "ESMALTE PARA SEÑALIZACIÓN VIAL - ALTO TRANSITO AMARILLO",
+            "unid_bien": "GALON",
+            "marc_bien": "CPP",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1888,
+            "codi_bien": "731500010081",
+            "desc_bien": "ESMALTE PARA SEÑALIZACIÓN VIAL - ALTO TRANSITO BLANCO",
+            "unid_bien": "GALON",
+            "marc_bien": "CPP",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1889,
+            "codi_bien": "731500010096",
+            "desc_bien": "ESMALTE PARA SEÑALIZACIÓN VIAL - ALTO TRANSITO NEGRO",
+            "unid_bien": "GALON",
+            "marc_bien": "CPP",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1890,
+            "codi_bien": null,
+            "desc_bien": "ESMALTE SINTETICO BLANCO",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "CPP",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1891,
+            "codi_bien": null,
+            "desc_bien": "ESMALTE SINTETICO GRIS CLARO",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "ANYPSA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1892,
+            "codi_bien": "731500010772",
+            "desc_bien": "ESMALTE SINTETICO NEGRO",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "CPP",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1893,
+            "codi_bien": null,
+            "desc_bien": "ESMERILADORA DE BANCO GB 801 - 205mm",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "MAKITA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1894,
+            "codi_bien": null,
+            "desc_bien": "ESPATULA  M MADERA  4\"  100mm",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "UTUSTOOLS",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1895,
+            "codi_bien": "208400050034",
+            "desc_bien": "FLUXOMETRO INDERECTO URINARIO 1.9 LT",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TREBOL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1896,
+            "codi_bien": "208400210013",
+            "desc_bien": "FLUXOMETRO PARA INODORO MODELO GS8105-2",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "FRATELLI",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1897,
+            "codi_bien": null,
+            "desc_bien": "FORMADOR DE EMPAQUE",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "ADEX",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1898,
+            "codi_bien": null,
+            "desc_bien": "FRESADORA - GOF 130",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "BOSCH",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1899,
+            "codi_bien": "672208530001",
+            "desc_bien": "FUMIGADOR PROFESIONALX 5 L - USO AGRICOLA",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TRUPER",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1900,
+            "codi_bien": "458000030146",
+            "desc_bien": "GANCHO DE SEGURIDAD DE DOBLE CIERRE - N-3610",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "NACIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1901,
+            "codi_bien": null,
+            "desc_bien": "GARRUCHAS PARA SILLAS  GIRATORIAS SET X5 UND",
+            "unid_bien": "PAQUETE",
+            "marc_bien": "VENEZIA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1902,
+            "codi_bien": null,
+            "desc_bien": "GRIFERIA PARA COCINA TIPO GANZO DE 1\/2\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "IVALSA",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1903,
+            "codi_bien": "275500070020",
+            "desc_bien": "GUARDACABO DE 1\/2\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "NACIONAL",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1904,
+            "codi_bien": "208400210008",
+            "desc_bien": "JUEGO DE ACCESORIOS DE PLASTICO DE INODORO",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "SANI",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1905,
+            "codi_bien": null,
+            "desc_bien": "JUEGO DE BROCAS ESCALONADAS  X 3PCS  JBES-3 100988",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TRUPER",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1906,
+            "codi_bien": null,
+            "desc_bien": "JUEGO DE COPLE Y CONECTORES RAPIDOS 1\/4 NPT LATON SOLIDO X 5 PCS   19081 CORAL -5",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "TRUPER",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1907,
+            "codi_bien": null,
+            "desc_bien": "JUEGO DE LLAVES INGLESAS X 4 PCS - 86-869",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "STANLEY",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1908,
+            "codi_bien": null,
+            "desc_bien": "JUEGO DE TRAMPA BOTELLA Y DESAGUE PLASTICO LAVATORIO DE 1 1\/4\" Y ACOPLE A 2\"",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "SANIFER",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1909,
+            "codi_bien": null,
+            "desc_bien": "KIT BASE CON BATERIAS DE IONES DE LITIO Y CARGADOR 2XGBA 18V 4,0Ah Y 1XGAL 1880 CV",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "BOSCH",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1910,
+            "codi_bien": null,
+            "desc_bien": "LACA SELLADORA PARA MADERA",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "PARACAS",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1911,
+            "codi_bien": null,
+            "desc_bien": "LASER LIGNES 3 X 360° - GLL 3-80 G",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "BOSCH",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1912,
+            "codi_bien": "025500010013",
+            "desc_bien": "LIJA AL AGUA DE 120X50 UND",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "ABRALIT",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1913,
+            "codi_bien": null,
+            "desc_bien": "LIJA AL AGUA DE 220X50 UND",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "ABRALIT",
+            "esta_bien": 1
+        },
+        {
+            "id_bien": 1914,
+            "codi_bien": "025500010176",
+            "desc_bien": "LIJA DE METAL N° 100 X50 UND",
+            "unid_bien": "UNIDAD",
+            "marc_bien": "ABRALIT",
+            "esta_bien": 1
+        }
+    ]
+}

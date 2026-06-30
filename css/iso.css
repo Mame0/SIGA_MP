@@ -1,0 +1,23 @@
+:root {
+				--mm-sidebar-expanded-size: 400px;
+			}
+			.mm-menu {
+				--mm-listitem-size: 50px;
+				--mm-navbar-size: 50px;
+			}
+
+			@media (min-width: 992px) {
+				.header a {
+					display: none;
+				}
+			}
+
+			.mm-navbar_tabs span {
+				display: inline-block;
+				margin-left: 8px;
+			}
+			@media (max-width: 450px) {
+				.mm-navbar_tabs span {
+					display: none;
+				}
+			}

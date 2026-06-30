@@ -1,0 +1,17 @@
+main
+{
+	column-count:3;
+	column-gap: 3em;
+	column-rule: 1px solid #bbb;
+	column-width: 180px;	
+	padding:0rem;
+	margin:0rem auto;
+	width:90%;
+	max-width:800px;
+	display:block;/*para IE*/
+}
+img
+{
+	display:block;
+	column-span:all;
+}

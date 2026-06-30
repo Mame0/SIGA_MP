@@ -1,0 +1,41 @@
+.foot
+{
+	display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+	background-color:white;
+	float:center;
+	position:fixed;
+	bottom:0px;
+	z-index:10;
+	width:100%;
+	padding-top: 6px;
+}
+.foot2
+{
+	float:center;
+	bottom:0px;
+	z-index:10;
+	width:100%;
+	max-width:850px;
+}
+.div_button_foot
+{
+	display:inline-block;
+	float:left;
+	width:47%;
+	margin:3px;
+}
+.button_foot
+{
+	text-decoration: none;
+	padding: 10px;
+	font-weight: 600;
+	font-size: 15px;
+	color: #ffffff;
+	background-color: #073A6B;
+	border-width:0px;
+	border-radius: 4px;
+	width:100%;
+	height:40px;
+}

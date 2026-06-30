@@ -1,0 +1,630 @@
+/* Custom CSS for the Warehouse and Kardex Module */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* Font Awesome 5 Free solid, regular and brands fonts definitions */
+@font-face {
+    font-family: 'Font Awesome 5 Free';
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("../libmenu/fontawesome-free/webfonts/fa-solid-900.eot");
+    src: url("../libmenu/fontawesome-free/webfonts/fa-solid-900.eot?#iefix") format("embedded-opentype"),
+         url("../libmenu/fontawesome-free/webfonts/fa-solid-900.woff2") format("woff2"),
+         url("../libmenu/fontawesome-free/webfonts/fa-solid-900.woff") format("woff"),
+         url("../libmenu/fontawesome-free/webfonts/fa-solid-900.ttf") format("truetype"),
+         url("../libmenu/fontawesome-free/webfonts/fa-solid-900.svg#fontawesome") format("svg");
+}
+
+@font-face {
+    font-family: 'Font Awesome 5 Free';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("../libmenu/fontawesome-free/webfonts/fa-regular-400.eot");
+    src: url("../libmenu/fontawesome-free/webfonts/fa-regular-400.eot?#iefix") format("embedded-opentype"),
+         url("../libmenu/fontawesome-free/webfonts/fa-regular-400.woff2") format("woff2"),
+         url("../libmenu/fontawesome-free/webfonts/fa-regular-400.woff") format("woff"),
+         url("../libmenu/fontawesome-free/webfonts/fa-regular-400.ttf") format("truetype"),
+         url("../libmenu/fontawesome-free/webfonts/fa-regular-400.svg#fontawesome") format("svg");
+}
+
+@font-face {
+    font-family: 'Font Awesome 5 Brands';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("../libmenu/fontawesome-free/webfonts/fa-brands-400.eot");
+    src: url("../libmenu/fontawesome-free/webfonts/fa-brands-400.eot?#iefix") format("embedded-opentype"),
+         url("../libmenu/fontawesome-free/webfonts/fa-brands-400.woff2") format("woff2"),
+         url("../libmenu/fontawesome-free/webfonts/fa-brands-400.woff") format("woff"),
+         url("../libmenu/fontawesome-free/webfonts/fa-brands-400.ttf") format("truetype"),
+         url("../libmenu/fontawesome-free/webfonts/fa-brands-400.svg#fontawesome") format("svg");
+}
+
+:root {
+    --primary-color: #073A6B;
+    --primary-hover: #0a4f91;
+    --primary-light: #e8f1fa;
+    --accent-color: #16a1e7;
+    --bg-color: #f4f6fa;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --text-main: #2b3a4a;
+    --text-muted: #6c7a89;
+    --border-color: #e2e8f0;
+    
+    /* Alerts and states */
+    --color-success: #10b981;
+    --color-success-bg: #ecfdf5;
+    --color-warning: #f59e0b;
+    --color-warning-bg: #fffbeb;
+    --color-danger: #ef4444;
+    --color-danger-bg: #fef2f2;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Page Header and Title */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-title h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.page-title i {
+    font-size: 24px;
+    color: var(--accent-color);
+}
+
+/* Dropdown styling */
+.select-warehouse {
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background-color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-color);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.select-warehouse:hover {
+    border-color: var(--accent-color);
+}
+
+/* KPI / Metric Cards Grid */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.metric-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 10px 15px -3px rgba(9, 30, 66, 0.05), 0 4px 6px -2px rgba(9, 30, 66, 0.05);
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(9, 30, 66, 0.08), 0 10px 10px -5px rgba(9, 30, 66, 0.08);
+}
+
+.metric-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.metric-icon.blue {
+    background-color: #eff6ff;
+    color: #3b82f6;
+}
+
+.metric-icon.green {
+    background-color: #f0fdf4;
+    color: #22c55e;
+}
+
+.metric-icon.yellow {
+    background-color: #fffbeb;
+    color: #eab308;
+}
+
+.metric-icon.red {
+    background-color: #fef2f2;
+    color: #ef4444;
+}
+
+.metric-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.metric-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 2px;
+}
+
+/* Control Bar (Search, Filters, Action Buttons) */
+.control-bar {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+    background-color: #f8fafc;
+}
+
+.search-input:focus {
+    border-color: var(--accent-color);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(22, 161, 231, 0.15);
+}
+
+.filters-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background-color: #ffffff;
+    color: var(--text-muted);
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    border-color: rgba(7, 58, 107, 0.3);
+}
+
+.filter-btn.active {
+    font-weight: 600;
+}
+
+.actions-group {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(7, 58, 107, 0.25);
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    color: var(--text-main);
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-color);
+    border-color: var(--text-muted);
+}
+
+/* Modern Responsive Table */
+.table-container {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.02);
+}
+
+.table-responsive {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.modern-table th {
+    background-color: #f8fafc;
+    padding: 14px 18px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-bottom: 2px solid var(--border-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modern-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 13.5px;
+    vertical-align: middle;
+}
+
+.modern-table tr:last-child td {
+    border-bottom: none;
+}
+
+.modern-table tr:hover td {
+    background-color: #f8fafc;
+}
+
+/* Custom badges */
+.badge {
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-success {
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.badge-warning {
+    background-color: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.badge-danger {
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+/* Detail view / Kardex view styling */
+.item-info-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 16px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Forms layout */
+.form-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto 24px auto;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.form-control, .form-select {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    font-size: 13.5px;
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(22, 161, 231, 0.15);
+}
+
+.form-control:disabled {
+    background-color: var(--bg-color);
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+/* Autocomplete suggestion styles */
+.autocomplete-container {
+    position: relative;
+}
+
+.suggestions-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    list-style: none;
+}
+
+.suggestion-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    border-bottom: 1px solid var(--bg-color);
+    transition: background-color 0.1s ease;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+/* Tab buttons for Form transaction types */
+.type-tabs {
+    display: flex;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 24px;
+}
+
+.type-tab {
+    padding: 12px 24px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-muted);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s ease;
+}
+
+.type-tab.active.ingreso {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.type-tab.active.salida {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+/* Footers and buttons alignment inside forms */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+/* Toast Messages */
+.toast-msg {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 16px 24px;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    z-index: 10000;
+    font-weight: 600;
+    display: none;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Custom card badges */
+.kardex-row-ingreso {
+    background-color: #f0fdf4 !important;
+}
+
+.kardex-row-salida {
+    background-color: #fef2f2 !important;
+}
+
+/* Premium Warehouse Badge & Readonly fields */
+.warehouse-badge {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(7, 58, 107, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13.5px;
+    transition: transform 0.2s ease;
+}
+
+.warehouse-badge:hover {
+    transform: translateY(-1px);
+}
+
+.warehouse-badge i {
+    color: var(--accent-color);
+    font-size: 15px;
+}
+
+.form-control-readonly {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-size: 13.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    cursor: not-allowed;
+}
+

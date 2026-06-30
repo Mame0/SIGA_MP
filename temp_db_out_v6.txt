@@ -1,0 +1,98 @@
+[
+    {
+        "id_bien": 2108,
+        "desc_bien": "CABLE THW 90 NRO 14 AWG BLANCO X 100",
+        "unid_bien": "METRO",
+        "stock_actual": 5,
+        "pu_actual": "170.0000",
+        "total_actual": "850.0000"
+    },
+    {
+        "id_bien": 2109,
+        "desc_bien": "CABLE THW 90 NRO 14 AWG ROJO X 100",
+        "unid_bien": "METRO",
+        "stock_actual": 4,
+        "pu_actual": "195.0000",
+        "total_actual": "780.0000"
+    },
+    {
+        "id_bien": 2110,
+        "desc_bien": "CABLE  TIERRA THW 90 NRO 14 AWG  X 100(AMARILLO\/VERDE)",
+        "unid_bien": "METRO",
+        "stock_actual": 9,
+        "pu_actual": "185.0000",
+        "total_actual": "1665.0000"
+    },
+    {
+        "id_bien": 2111,
+        "desc_bien": "CABLE THW 90 NRO 12 AWG ROJO X 100",
+        "unid_bien": "METRO",
+        "stock_actual": 2,
+        "pu_actual": "267.0000",
+        "total_actual": "534.0000"
+    },
+    {
+        "id_bien": 2112,
+        "desc_bien": "CABLE THW 90 NRO 12 AWG BLANCO X 100",
+        "unid_bien": "METRO",
+        "stock_actual": 1,
+        "pu_actual": "268.0000",
+        "total_actual": "268.0000"
+    },
+    {
+        "id_bien": 2113,
+        "desc_bien": "CABLE  TIERRA THW 90 NRO 12 AWG  X 100(AMARILLO\/VERDE)",
+        "unid_bien": "METRO",
+        "stock_actual": 3,
+        "pu_actual": "268.0000",
+        "total_actual": "804.0000"
+    },
+    {
+        "id_bien": 2114,
+        "desc_bien": "CABLE THW 90 NRO 10 AWG BLANCO X 100",
+        "unid_bien": "METRO",
+        "stock_actual": 1,
+        "pu_actual": "399.0000",
+        "total_actual": "399.0000"
+    },
+    {
+        "id_bien": 2115,
+        "desc_bien": "CABLE THW 90 NRO 10 AWG ROJO X 100",
+        "unid_bien": "METRO",
+        "stock_actual": 1,
+        "pu_actual": "550.0000",
+        "total_actual": "550.0000"
+    },
+    {
+        "id_bien": 2116,
+        "desc_bien": "CABLE  TIERRA THW 90 NRO 10 AWG  X 100(AMARILLO\/VERDE)",
+        "unid_bien": "METRO",
+        "stock_actual": 1,
+        "pu_actual": "430.0000",
+        "total_actual": "430.0000"
+    },
+    {
+        "id_bien": 2117,
+        "desc_bien": "CABLE TIPO NLT VULCANIZADO 3X14  X 100",
+        "unid_bien": "METRO",
+        "stock_actual": 1,
+        "pu_actual": "690.0000",
+        "total_actual": "690.0000"
+    },
+    {
+        "id_bien": 2118,
+        "desc_bien": "CABLE TIPO NLT VULCANIZADO 3X12  X 100",
+        "unid_bien": "METRO",
+        "stock_actual": 1,
+        "pu_actual": "1060.0000",
+        "total_actual": "1060.0000"
+    },
+    {
+        "id_bien": 2119,
+        "desc_bien": "CABLE TIERRA  16mm   - COBRE DESNUDO",
+        "unid_bien": "METRO",
+        "stock_actual": 0,
+        "pu_actual": "110000.0000",
+        "total_actual": "0.0000"
+    }
+]

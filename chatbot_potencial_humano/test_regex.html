@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Regex</title>
+</head>
+<body>
+    <div id="output"></div>
+    <script>
+        const chatMessages = document.getElementById('output');
+        
+        window.sendOption = function(texto) {
+            console.log("Clicked:", texto);
+            alert("Clicked: " + texto);
+        };
+
+        function testFormat(texto) {
+            let html = texto.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            html = html.replace(/\n/g, '<br>');
+            
+            const subRegex = /(?:<br>|^)\s*([a-z]\.|[i,v]{1,3}\.)\s+([^<]+?)(?=<br>|$)/g;
+            html = html.replace(subRegex, function (match, id, text) {
+                if (text.length > 75 || text.includes(':')) return match; 
+                const fullOption = `${id.trim()} ${text.trim()}`;
+                return `<br><button class="menu-btn sub-btn" onclick="sendOption('${fullOption}')">${fullOption}</button>`;
+            });
+
+            const actionRegex = /(?:<br>|^)\s*(🔙[^<]*|🏠[^<]*)(?=<br>|$)/g;
+            html = html.replace(actionRegex, function (match, text) {
+                return `<br><button class="menu-btn sub-btn" style="background-color: #f0f4f8; color: #0056b3; font-weight: 500;" onclick="sendOption('${text.trim()}')">${text.trim()}</button>`;
+            });
+            
+            return html;
+        }
+
+        const sample = "i. Licencia por enfermedad\nii. Licencia por maternidad\n🔙 Volver a Licencias\n🏠 Volver al menú principal";
+        
+        chatMessages.innerHTML = testFormat(sample);
+    </script>
+</body>
+</html>

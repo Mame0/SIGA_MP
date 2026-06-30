@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.pj.gob.pe/consultaReniecService" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="consultaReniecService" targetNamespace="http://www.pj.gob.pe/consultaReniecService">
+  
+  <wsdl:types>
+    <xsd:schema xmlns:mrm="http://www.pj.gob.pe/consultaReniecService" targetNamespace="http://www.pj.gob.pe/consultaReniecService" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.pj.gob.pe/consultaReniecService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+      <xsd:element name="consultaReniecResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element form="qualified" name="res_trama" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="res_codigo" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="res_descripcion" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="res_totalRegistros" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="res_persona" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="res_foto" nillable="true" type="xsd:base64Binary"/>
+            <xsd:element form="qualified" name="res_firma" nillable="true" type="xsd:base64Binary"/>
+            <xsd:element form="qualified" name="res_listaPersonas" nillable="true" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+    <xsd:schema xmlns:mrm="http://www.pj.gob.pe/consultaReniecService" targetNamespace="http://www.pj.gob.pe/consultaReniecService" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.pj.gob.pe/consultaReniecService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:element name="consultaReniec">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element form="qualified" name="req_trama" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_dniConsultante" nillable="false" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_tipoConsulta" nillable="false" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_usuario" nillable="false" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_ip" nillable="false" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_dni" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_nombres" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_apellidoPaterno" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_apellidoMaterno" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_nroRegistros" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_grupo" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_dniApoderado" nillable="true" type="xsd:string"/>
+            <xsd:element form="qualified" name="req_tipoVinculoApoderado" nillable="true" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="consultaReniec_in">
+    <wsdl:part element="tns:consultaReniec" name="consultaReniec"/>
+  </wsdl:message>
+  <wsdl:message name="consultaReniec_out">
+    <wsdl:part element="tns:consultaReniecResponse" name="consultaReniecResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="ConsultaReniecPortType">
+    <wsdl:operation name="consultaReniec">
+      <wsdl:input message="tns:consultaReniec_in" name="consultaReniec_Input"/>
+      <wsdl:output message="tns:consultaReniec_out" name="consultaReniec_Output"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ConsultaReniecBinding" type="tns:ConsultaReniecPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="consultaReniec">
+      <soap:operation soapAction="consultaReniecAction"/>
+      <wsdl:input name="consultaReniec_Input">
+        <soap:body parts="consultaReniec" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="consultaReniec_Output">
+        <soap:body parts="consultaReniecResponse" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ConsultaReniecService">
+    <wsdl:port binding="tns:ConsultaReniecBinding" name="consultaReniec">
+      <soap:address location="http://172.18.2.28:7800/ConsultaReniecService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

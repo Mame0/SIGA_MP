@@ -1,0 +1,250 @@
+n_codigo,x_nombre,n_estado
+1,Escuela de Postgrado San Francisco Xavier,0
+2,Escuela Internacional de Posgrado S.A.C.,0
+3,Facultad de Teología Pontificia y Civil de Lima,1
+4,Pontificia Universidad Católica del Perú,1
+5,Universidad Alas Peruanas,0
+6,Universidad Andina del Cusco,1
+7,Universidad Andina Néstor Cáceres Velásquez,0
+8,Universidad Antonio Ruiz de Montoya,1
+9,Universidad Autónoma de Ica,1
+10,Universidad Autónoma del Perú,1
+11,Universidad Autónoma San Francisco,0
+12,Universidad Católica de Santa María,1
+13,Universidad Católica de Trujillo Benedicto XVI,1
+14,Universidad Católica Los Ángeles de Chimbote,0
+15,Universidad Católica San Pablo,1
+16,Universidad Católica Santo Toribio de Mogrovejo,1
+17,Universidad Católica Sedes Sapientiae,1
+18,Universidad César Vallejo,1
+19,Universidad Ciencias de la Salud,0
+20,Universidad Científica del Perú,0
+21,Universidad Científica del Sur,1
+22,Universidad Continental,1
+23,Universidad de Ayacucho Federico Froebel,0
+24,Universidad de Ciencias y Artes de América Latina,1
+25,Universidad de Ciencias y Humanidades,1
+26,Universidad de Huánuco,1
+27,Universidad de Ingeniería y Tecnología,1
+28,Universidad de Lambayeque,0
+29,Universidad de Lima,1
+30,Universidad de Piura,1
+31,Universidad de San Martín de Porres,1
+32,Universidad del Pacífico,1
+33,Universidad ESAN,1
+34,Universidad Femenina del Sagrado Corazón,1
+35,Universidad Global del Cusco,0
+36,Universidad Inca Garcilaso de la Vega,0
+37,Universidad Interamericana para el Desarrollo,0
+38,Universidad Jaime Bausate y Meza,1
+39,Universidad José Carlos Mariátegui,0
+40,Universidad La Salle,1
+41,Universidad Latinoamericana CIMA,0
+42,Universidad Le Cordon Bleu S.A.C.,1
+43,Universidad Marcelino Champagnat,1
+44,Universidad María Auxiliadora,1
+45,Universidad Marítima del Perú,0
+46,Universidad Nacional Agraria de la Selva,1
+47,Universidad Nacional Agraria la Molina,1
+48,Universidad Nacional Amazónica de Madre de Dios,1
+49,Universidad Nacional Autónoma Altoandina de Tarma,1
+50,Universidad Nacional Autónoma de Alto Amazonas,1
+51,Universidad Nacional Autónoma de Chota,1
+52,Universidad Nacional Autónoma de Huanta,1
+53,Universidad Nacional Autónoma de Tayacaja “Daniel Hernández Morillo”,1
+54,Universidad Nacional Ciro Alegría,1
+55,Universidad Nacional Daniel Alcides Carrión,1
+56,Universidad Nacional de Barranca,1
+57,Universidad Nacional de Cajamarca,1
+58,Universidad Nacional de Cañete,1
+59,Universidad Nacional de Educación Enrique Guzmán y Valle,1
+60,Universidad Nacional de Frontera,1
+61,Universidad Nacional de Huancavelica,1
+62,Universidad Nacional de Ingeniería,1
+63,Universidad Nacional de Jaén,1
+64,Universidad Nacional de Juliaca,1
+65,Universidad Nacional de la Amazonía Peruana,1
+66,Universidad Nacional de Moquegua,1
+67,Universidad Nacional de Piura,1
+68,Universidad Nacional de San Agustín,1
+69,Universidad Nacional de San Antonio Abad del Cusco,1
+70,Universidad Nacional de San Cristóbal de Huamanga,1
+71,Universidad Nacional de San Martín,1
+72,Universidad Nacional de Trujillo,1
+73,Universidad Nacional de Tumbes,1
+74,Universidad Nacional de Ucayali,1
+75,Universidad Nacional del Altiplano,1
+76,Universidad Nacional del Callao,1
+77,Universidad Nacional del Centro del Perú,1
+78,Universidad Nacional del Santa,1
+79,Universidad Nacional Federico Villarreal,1
+80,Universidad Nacional Hermilio Valdizán,1
+81,Universidad Nacional Intercultural de la Amazonia,1
+82,Universidad Nacional Intercultural de la selva central Juan Santos Atahualpa,1
+83,Universidad Nacional Intercultural de Quillabamba,1
+84,Universidad Nacional Intercultural Fabiola Salazar Leguía de Bagua,1
+85,Universidad Nacional Jorge Basadre Grohmann,1
+86,Universidad Nacional José Faustino Sánchez Carrión,1
+87,Universidad Nacional José María Arguedas,1
+88,Universidad Nacional Mayor de San Marcos,1
+89,Universidad Nacional Micaela Bastidas de Apurímac,1
+90,Universidad Nacional Pedro Ruiz Gallo,1
+91,Universidad Nacional San Luis Gonzaga,1
+92,Universidad Nacional Santiago Antúnez de Mayolo,1
+93,Universidad Nacional Tecnológica De Lima Sur,1
+94,Universidad Nacional Toribio Rodríguez de Mendoza de Amazonas,1
+95,Universidad para el Desarrollo Andino,1
+96,Universidad Particular de Chiclayo,0
+97,Universidad Peruana Austral del Cusco,0
+98,Universidad Peruana Cayetano Heredia,1
+99,Universidad Peruana de Arte Orval S.A.C.,0
+100,Universidad Peruana de Ciencias Aplicadas,1
+101,Universidad Peruana de Ciencias e Informática,0
+102,Universidad Peruana de Integración Global S.A.C.,0
+103,Universidad Peruana de Investigación y Negocios,0
+104,Universidad Peruana de Oriente,0
+105,Universidad Peruana del Centro,1
+106,Universidad Peruana Las Américas,0
+107,Universidad Peruana Los Andes,1
+108,Universidad Peruana Santo Tomás de Aquino de Ciencia e Integración,0
+109,Universidad Peruana Simón Bolívar,0
+110,Universidad Peruana Unión,1
+111,Universidad Politécnica Amazónica,0
+112,Universidad Politécnica del Perú S.A.,1
+113,Universidad Privada Antenor Orrego,1
+114,Universidad Privada Antonio Guillermo Urrelo,0
+115,Universidad Privada Arzobispo Loayza,0
+116,Universidad Privada Autónoma del Sur,0
+117,Universidad Privada de Huancayo Franklin Roosevelt,1
+118,Universidad Privada de Ica,0
+119,Universidad Privada de la Selva Peruana,0
+120,Universidad Privada de Pucallpa,0
+121,Universidad Privada de Tacna,1
+122,Universidad Privada de Trujillo,1
+123,Universidad Privada del Norte,1
+124,Universidad Privada Juan Mejía Baca,0
+125,Universidad Privada Juan Pablo II,0
+126,Universidad Privada Leonardo Da Vinci,0
+127,Universidad Privada Líder Peruana,0
+128,Universidad Privada Norbert Wiener,1
+129,Universidad Privada San Carlos,0
+130,Universidad Privada San Juan Bautista,1
+131,Universidad Privada Sergio Bernales,0
+132,Universidad Privada SISE,0
+133,Universidad Privada Telesup,0
+134,Universidad Ricardo Palma,1
+135,Universidad San Andrés,0
+136,Universidad San Ignacio de Loyola,1
+137,Universidad San Pedro,0
+138,Universidad Santo Domingo de Guzmán,0
+139,Universidad Seminario Bíblico Andino,0
+140,Universidad Seminario Evangélico de Lima,0
+141,Universidad Señor de Sipán,1
+142,Universidad Tecnológica de los Andes,1
+143,Universidad Tecnológica del Perú,1
+144,Administracion y Negocios,1
+145,Alas Peruanas,1
+146,Alexander Von Humboldt,1
+147,Alta Cocina D'Gallia,1
+148,Ansimar,1
+149,Arzobispo Loayza,1
+150,BSG Institute,1
+151,Capeco,1
+152,Centro de Altos Estudios de la Moda - CEAM,1
+153,Centro de la Imagen,1
+154,Centro Peruano de Estudios Bancarios - Cepeban,1
+155,Cepea,1
+156,Certus,1
+157,Cesde,1
+158,Cetemin,1
+159,Ceturgh Peru,1
+160,Charles Chaplin,1
+161,Chio Lecca,1
+162,Cibertec,1
+163,Clorinda Matto de Turner,1
+164,Columbia,1
+165,Complejo Hospitalario San Pablo,1
+166,Condoray,1
+167,Continental,1
+168,Corriente Alterna,1
+169,Daniel Alcides Carrion,1
+170,De Ciencias Multiculturales - CIM,1
+171,De Comercio Exterior,1
+172,De Crucero,1
+173,De Emprendedores,1
+174,De Emprendedores ISAG,1
+175,De Optometria y Ciencias Eurohispano,1
+176,Educacion Medica San Fernando,1
+177,EF,1
+178,El Buen Pastor,1
+179,Elmer Faucett,1
+180,Federico Villarreal - Chincha,1
+181,Fibonacci,1
+182,Francisco de Paula Gonzales Vigil,1
+183,Hector Vasquez Jimenez,1
+184,Huando,1
+185,Iberoamericana,1
+186,Idat,1
+187,Idatur,1
+188,ILC - Instituto Latino del Cusco,1
+189,Inlog,1
+190,Instituto de Investigacion Socioeconomico Latinoamericano - Intur Peru,1
+191,Instituto de Profesiones Empresariales - Inteci,1
+192,Instituto Peruano de Administracion de Empresas - IPAE,1
+193,Instituto Peruano de Administracion de Empresas - IPAE Iquitos,1
+194,Instituto Peruano de Arte y Diseño,1
+195,Instituto Peruano de Publicidad,1
+196,Instituto Tecnico de Administracion de Empresas - ITAE,1
+197,Interamericano,1
+198,Investigacion Ciencia y Tecnologia,1
+199,Iscemp,1
+200,Jhalebet,1
+201,Jobs Capacity,1
+202,Jose Carlos Mariategui,1
+203,Jose Santos Chocano,1
+204,Juan Bosco de Huanuco,1
+205,Khipu,1
+206,La Pontificia,1
+207,Latino,1
+208,Latino Barranca,1
+209,Le Cordon Bleu Peru,1
+210,Lilia Gutierrez Molero,1
+211,Lima Institute of Technical Studies - LITS,1
+212,Maria de los Angeles Cima's,1
+213,Maria Elena Moyano,1
+214,Maria Montessori,1
+215,Mod'Art Peru,1
+216,Nina Design,1
+217,Nuestra Señora de Montserrat,1
+218,Nuestra Señora del Carmen,1
+219,Nuevo Pachacutec,1
+220,Orson Welles,1
+221,Otuzco,1
+222,Padre Abad,1
+223,Paul Muller,1
+224,Peruano de Cine y Creatividad - EPIC,1
+225,Peruano de Marketing,1
+226,Peruano de Sistemas Sise,1
+227,Republica Federal de Alemania,1
+228,Ricardo Palma,1
+229,Sabio Nacional Antunez de Mayolo,1
+230,San Antonio,1
+231,San Ignacio de Loyola S.A. - ISIL,1
+232,San Ignacio de Monterrico - Sidem,1
+233,San Jose del Sur,1
+234,San Lucas,1
+235,San Marcos,1
+236,Santa Maria,1
+237,Santa Rosa de Lima,1
+238,Senati,1
+239,Sergio Bernales,1
+240,Sergio Bernales Garcia,1
+241,Simon Bolivar,1
+242,Sinergia,1
+243,Tec,1
+244,Tecsup N°1,1
+245,Tecsup N°2,1
+246,Toulouse Lautrec,1
+247,Tupac Amaru,1
+248,Virgen de Guadalupe,1
+249,Wernher Von Braun,1

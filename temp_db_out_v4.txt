@@ -1,0 +1,18 @@
+Db Object
+(
+    [dbh:protected] => PDO Object
+        (
+        )
+
+    [query:protected] => 
+    [timestamp_writes:protected] => 
+    [prefix:protected] => 
+    [credenciales] => Array
+        (
+            [host] => localhost
+            [usuario] => root
+            [clave] => 
+            [dbnombre] => mpfnarequipa_siga
+        )
+
+)

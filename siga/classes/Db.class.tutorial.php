@@ -1,0 +1,245 @@
+Installation
+------------
+
+Import Db.class.php into your project, and require it:
+
+	require_once 'Db.class.php';
+
+or you can use autoload:
+
+	spl_autoload_extensions('.class.php');
+	spl_autoload_register();
+
+Import the namespace to the file where the class is used:
+
+	use lib\Db;
+
+Initialization
+--------------
+
+Simple initialization with utf8 charset set by default:
+
+	// simple way (you need to change params in the 'constructor' at first):
+	$db = new Db();
+
+Advanced initialization:
+
+	// initialization with params:
+	$db = new Db('driver', 'host', 'username', 'password', 'databaseName', 'charset', 'prefix');
+
+Select
+------
+
+select all from the table table1
+
+	$db->select('table1');
+
+select 1 row from the table table1 where id == 1
+
+	$db->select('table1', ['id' => 1]);
+
+select columns col1 and col2 from the table table1
+
+	$db->select(['table1', ['col1', 'col2']]);
+
+select columns col1 and col2 from the table table1 with limit start from 0 to 3 sorted by ascending
+
+	$db->select(['table1', ['col1', 'col2']], '', '3', '0', ['id' => 'ASC']);
+
+Examples of use
+
+	// select 1 article where id == 1
+	$article = $db->select('article', ['id' => 1])) 
+	// show
+	foreach ($article as $k => $v)
+	{
+	    echo '<p>' . $k . ': ' . $v . '</p>';
+	}
+
+	// select columns title and content from the table article
+	$selectCustomCols = $db->select(['article', ['title', 'content']]);
+	// show
+	foreach ($selectCustomCols as $rows)
+	{
+	    echo '<p>';
+	    foreach ($rows as $col_k => $col_v)
+	    {
+	         echo $col_k . ': ' . $col_v . '<br>';
+	    }
+	    echo '</p>';
+	}
+
+Select Join
+------ ----
+
+select data from tables articles, authors, tags
+
+	$articles = $db->selectJoin([
+		'articles' => [
+			'id AS artid', 'title AS atrtitle', 'content', 'image', 'author_id', 'published'
+		],
+		'authors' => [
+			'id AS autid', 'name'
+		],
+		'tags' => [
+			'id AS tgid', 'title AS tgtitle'
+		]
+	], ['authors' => [
+	        'articles.author_id', 'authors.id'
+	    ],
+	    'tags' => [
+	        'tags.article_id', 'tags.id'
+	    ]
+	]);
+	// check the result
+	var_dump($articles);die;
+
+to avoid conflicts for columns id and title give aliases
+
+Insert
+------
+
+insert one row into the table table1 with columns id, title, content
+
+	$db->insert('table1', [
+	        'id' => null,
+	        'title' => 'Заголовок 1',
+	        'content' => 'Тут текст записи № 1.'
+	    ]
+	);
+
+Insert Multiple
+------ --------
+
+insert several rows (if id PRIMARY KEY - we can use null)
+
+	$db->insertMultiple(
+	        'table1',
+	        ['id, title, content'],
+	        [
+	            [1, 'title 1', 'Text of the article 1'],
+	            [2, 'title 2', 'Text of the article 2']
+	        ]
+	);
+
+Last Insert Id
+---- ------ --
+
+method returns last inserted id of the query, that was made before
+
+	$lastInsertId = $db->lastInsertId();
+
+Update
+------
+
+update column col1 in the table table1
+
+	$db->update('table1', ['col1' => 'Article 1 (updated)'], ['id' => 9]);
+
+update all columns col1 in the table table1 where value == Title № 10
+
+	$db->update('table1', ['col1' => 'Title № 10++ (updated)'], ['col1' => 'Title № 10']);
+
+Example of use
+
+	$updateRow = $db->update('article', ['title' => 'Article 1 (updated text here)'], ['id' => 10]);
+	if ($updateRow) {
+	    echo 'updated ' . $updateRow . ' row(s) successfully!';
+	} else {
+	    echo 'update failed!';
+	}
+
+Delete
+------
+
+	$db->delete('table1', ['id' => 1]);
+
+Example of use
+
+	if($db->delete('article', ['id' => 1])) 
+	{
+	    echo 'Row deleted successfully!';
+	}
+
+Create Database
+------ --------
+
+	$db->createDatabase('database1');
+
+Example of use
+
+	if($db->createDatabase('articles')) 
+	{
+	    echo 'Database articles created successfully!';
+	}
+
+Create Table
+------ -----
+
+if we write in such a way:
+
+	$db->createTable('users', [
+	        'firstName' => 'VARCHAR(255) NOT NULL',
+	        'lastName' => 'VARCHAR(255) NOT NULL',
+	        'email' => 'VARCHAR(255) NOT NULL'
+	    ]
+	);
+
+the final query will be:
+
+	CREATE TABLE IF NOT EXISTS users (
+	    id INT(11) NOT NULL AUTO_INCREMENT,
+	    firstName VARCHAR(255) NOT NULL,
+	    lastName VARCHAR(255) NOT NULL,
+	    email VARCHAR(255) NOT NULL,
+	    PRIMARY KEY (id)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+Optimize Table
+-------- -----
+
+	$db->optimizeTable('table1');
+
+Example of use
+
+	if($db->optimizeTable('article')) 
+	{
+	    echo 'Table article successfully optimized!';
+	}
+
+Truncate Table
+-------- -----
+
+	$db->truncateTable('table1');
+
+Example of use
+
+	if($db->truncateTable('article')) 
+	{
+	    echo 'Table article successfully cleared!';
+	}
+
+Drop Database
+---- --------
+
+	$db->dropDatabase('database1');
+
+Example of use
+
+	if($db->dropDatabase('articles')) 
+	{
+	    echo 'Table articles successfully deleted!';
+	}
+
+Drop Table
+---- -----
+
+	$db->dropTable('table1');
+
+Example of use
+
+	if($db->dropTable('article')) 
+	{
+	    echo 'Table article successfully deleted!';
+	}
+
