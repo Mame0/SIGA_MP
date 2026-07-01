@@ -12,19 +12,35 @@
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mp_vaca_conductor` (
   `id_conductor`     INT AUTO_INCREMENT PRIMARY KEY,
-  `iden_pers`        INT NOT NULL,                       -- ref. lógica a mp_maes_personal.iden_pers
-  `ndoc`             CHAR(8) NOT NULL,
+  `iden_pers`        INT NULL,                           -- ref. lógica a mp_maes_personal.iden_pers (NULL en terceros)
+  `ndoc`             CHAR(8) NOT NULL DEFAULT '',
   `appat`            VARCHAR(60) NOT NULL,
   `apmat`            VARCHAR(60) NOT NULL,
   `nombres`          VARCHAR(100) NOT NULL,
-  `regimen`          VARCHAR(40) NOT NULL DEFAULT '',    -- DL.728 / CAS (de mp_maes_regimen_laboral)
+  `regimen`          VARCHAR(40) NOT NULL DEFAULT '',    -- DL.728 / CAS / TERCEROS (de mp_maes_regimen_laboral)
   `fecha_ingreso`    DATE NOT NULL,
   `dias_por_periodo` INT NOT NULL DEFAULT 30,
+  `es_tercero`       TINYINT NOT NULL DEFAULT 0,         -- 1 = chofer tercero (no está en mp_maes_personal)
   `estado`           TINYINT NOT NULL DEFAULT 1,
   `fecha_reg`        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY `uq_iden_pers` (`iden_pers`),
+  UNIQUE KEY `uq_iden_pers` (`iden_pers`),               -- permite múltiples NULL (terceros)
   KEY `idx_ndoc` (`ndoc`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Migración idempotente para instalaciones que ya crearon la tabla antes de los terceros:
+SET @col := (SELECT COUNT(*) FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mp_vaca_conductor' AND COLUMN_NAME = 'es_tercero');
+SET @sql := IF(@col = 0,
+  'ALTER TABLE `mp_vaca_conductor` ADD COLUMN `es_tercero` TINYINT NOT NULL DEFAULT 0 AFTER `dias_por_periodo`',
+  'SELECT 1');
+PREPARE st FROM @sql; EXECUTE st; DEALLOCATE PREPARE st;
+
+SET @nul := (SELECT IS_NULLABLE FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mp_vaca_conductor' AND COLUMN_NAME = 'iden_pers');
+SET @sql := IF(@nul = 'NO',
+  'ALTER TABLE `mp_vaca_conductor` MODIFY COLUMN `iden_pers` INT NULL',
+  'SELECT 1');
+PREPARE st FROM @sql; EXECUTE st; DEALLOCATE PREPARE st;
 
 -- ---------------------------------------------------------------------
 -- 2) Catálogo global de periodos (etiquetas de calendario fijas)
@@ -187,6 +203,10 @@ WHERE NOT EXISTS (SELECT 1 FROM `mp_admi_subm` WHERE `page_subm`='vacaciones_det
 INSERT INTO `mp_admi_subm` (`iden_menu`,`nomb_subm`,`icon_subm`,`page_subm`,`iden_padr`,`orde_subm`,`esta_subm`)
 SELECT 1,'Reporte de vacaciones','file-text','vacaciones_reporte.php',@vaca_grp,5,1
 WHERE NOT EXISTS (SELECT 1 FROM `mp_admi_subm` WHERE `page_subm`='vacaciones_reporte.php');
+
+INSERT INTO `mp_admi_subm` (`iden_menu`,`nomb_subm`,`icon_subm`,`page_subm`,`iden_padr`,`orde_subm`,`esta_subm`)
+SELECT 1,'Importar desde Excel','upload','vacaciones_importar.php',@vaca_grp,6,1
+WHERE NOT EXISTS (SELECT 1 FROM `mp_admi_subm` WHERE `page_subm`='vacaciones_importar.php');
 
 -- =====================================================================
 --  PERMISOS (mp_admi_role_subm): otorga la ruta completa

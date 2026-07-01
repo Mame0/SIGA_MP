@@ -28,9 +28,14 @@ require_once 'include/cabecera.php';
 </head>
 <body>
     <header class="header-vaca text-white p-3 mb-3">
-        <div class="container-fluid d-flex align-items-center">
-            <i class="bi bi-calendar2-plus fs-3 me-2"></i>
-            <h1 class="h4 mb-0">Programación de Vacaciones</h1>
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-calendar2-plus fs-3 me-2"></i>
+                <h1 class="h4 mb-0">Programación de Vacaciones</h1>
+            </div>
+            <a class="btn btn-light btn-sm fw-bold" href="vacaciones_importar.php">
+                <i class="bi bi-file-earmark-arrow-up"></i> Importar desde Excel
+            </a>
         </div>
     </header>
 

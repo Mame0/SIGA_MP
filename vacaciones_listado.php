@@ -9,7 +9,7 @@ define('VACA_CARGO_LABEL', 'ASISTENTE ADMINISTRATIVO (CONDUCTOR)');
 
 // Listado de conductores activos (maestro local de vacaciones)
 $conductores = $Db->query(
-    "SELECT id_conductor, ndoc, appat, apmat, nombres, regimen, fecha_ingreso,
+    "SELECT id_conductor, ndoc, appat, apmat, nombres, regimen, fecha_ingreso, es_tercero,
             CONCAT(appat,' ',apmat,', ',nombres) AS nombre_completo
      FROM mp_vaca_conductor
      WHERE estado = 1
@@ -48,9 +48,14 @@ function vaca_fecha($f) {
                 <i class="bi bi-person-vcard fs-2 me-2"></i>
                 <h1 class="h4 mb-0">Vacaciones de Conductores</h1>
             </div>
-            <button id="btnSync" class="btn btn-light btn-sm fw-bold">
-                <i class="bi bi-arrow-repeat"></i> Sincronizar conductores
-            </button>
+            <div class="d-flex gap-2">
+                <button id="btnTercero" class="btn btn-warning btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalTercero">
+                    <i class="bi bi-person-plus"></i> Agregar tercero
+                </button>
+                <button id="btnSync" class="btn btn-light btn-sm fw-bold">
+                    <i class="bi bi-arrow-repeat"></i> Sincronizar conductores
+                </button>
+            </div>
         </div>
     </header>
 
@@ -86,7 +91,12 @@ function vaca_fecha($f) {
                         <?php else: $i = 1; foreach ($conductores as $c): ?>
                             <tr>
                                 <td class="text-center"><?= $i++ ?></td>
-                                <td class="fw-semibold"><?= htmlspecialchars($c['nombre_completo']) ?></td>
+                                <td class="fw-semibold">
+                                    <?= htmlspecialchars($c['nombre_completo']) ?>
+                                    <?php if (!empty($c['es_tercero'])): ?>
+                                        <span class="badge bg-warning text-dark">Tercero</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td><?= VACA_CARGO_LABEL ?></td>
                                 <td class="text-center"><?= htmlspecialchars($c['regimen']) ?: '-' ?></td>
                                 <td class="text-center"><?= vaca_fecha($c['fecha_ingreso']) ?></td>
@@ -100,10 +110,70 @@ function vaca_fecha($f) {
         </div>
     </div>
 
+    <!-- Modal: agregar chofer tercero -->
+    <div class="modal fade" id="modalTercero" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header text-white" style="background:#073A6B">
+            <h5 class="modal-title"><i class="bi bi-person-plus"></i> Agregar chofer tercero</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div id="tAlerta" class="alert d-none py-2"></div>
+            <p class="small text-muted">Para choferes contratados que <strong>no están</strong> en el maestro de personal.</p>
+            <div class="row g-2">
+              <div class="col-md-6"><label class="form-label small mb-0">Apellido paterno *</label>
+                <input type="text" class="form-control form-control-sm" id="tAppat"></div>
+              <div class="col-md-6"><label class="form-label small mb-0">Apellido materno</label>
+                <input type="text" class="form-control form-control-sm" id="tApmat"></div>
+              <div class="col-12"><label class="form-label small mb-0">Nombres *</label>
+                <input type="text" class="form-control form-control-sm" id="tNombres"></div>
+              <div class="col-md-4"><label class="form-label small mb-0">DNI</label>
+                <input type="text" class="form-control form-control-sm" id="tNdoc" maxlength="8"></div>
+              <div class="col-md-4"><label class="form-label small mb-0">Régimen</label>
+                <input type="text" class="form-control form-control-sm" id="tRegimen" value="TERCEROS"></div>
+              <div class="col-md-4"><label class="form-label small mb-0">Fecha de ingreso</label>
+                <input type="date" class="form-control form-control-sm" id="tFing"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="btnGuardarTercero"><i class="bi bi-save"></i> Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const btn = document.getElementById('btnSync');
         const alerta = document.getElementById('alerta');
+
+        document.getElementById('btnGuardarTercero').addEventListener('click', () => {
+            const al = document.getElementById('tAlerta');
+            const appat = document.getElementById('tAppat').value.trim();
+            const nombres = document.getElementById('tNombres').value.trim();
+            if (!appat || !nombres) {
+                al.className = 'alert alert-warning py-2';
+                al.textContent = 'Apellido paterno y nombres son obligatorios.';
+                return;
+            }
+            const fd = new FormData();
+            fd.append('appat', appat);
+            fd.append('apmat', document.getElementById('tApmat').value.trim());
+            fd.append('nombres', nombres);
+            fd.append('ndoc', document.getElementById('tNdoc').value.trim());
+            fd.append('regimen', document.getElementById('tRegimen').value.trim());
+            fd.append('fecha_ingreso', document.getElementById('tFing').value);
+            fetch('vacaciones_controller.php?action=crear_tercero', { method: 'POST', body: fd })
+                .then(r => r.json())
+                .then(d => {
+                    al.className = 'alert py-2 alert-' + (d.success ? 'success' : 'danger');
+                    al.textContent = d.success ? d.message : d.error;
+                    if (d.success) setTimeout(() => location.reload(), 800);
+                })
+                .catch(e => { al.className = 'alert alert-danger py-2'; al.textContent = 'Error de red: ' + e.message; });
+        });
 
         function mostrarAlerta(tipo, texto) {
             alerta.className = 'alert alert-' + tipo;

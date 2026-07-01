@@ -154,6 +154,311 @@ function vaca_validar_cupo($pdo, $fechas, $idConductor, $tope) {
     return $conflictos;
 }
 
+/* ---------------------------------------------------------------------
+ *  Helpers de importación desde Excel (Fase 6)
+ * ------------------------------------------------------------------- */
+
+// Normaliza texto para comparar nombres: mayúsculas, sin tildes, espacios colapsados.
+function vaca_norm_txt($s) {
+    $s = trim((string)$s);
+    $map = ['á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ü'=>'u','ñ'=>'n',
+            'Á'=>'A','É'=>'E','Í'=>'I','Ó'=>'O','Ú'=>'U','Ü'=>'U','Ñ'=>'N'];
+    $s = strtr($s, $map);
+    $s = mb_strtoupper($s, 'UTF-8');
+    $s = preg_replace('/\s+/', ' ', $s);
+    return trim($s);
+}
+
+// Parte "APELLIDOS Y NOMBRES" (formato "APPAT APMAT, NOMBRES") en [appat, apmat, nombres].
+function vaca_partir_nombre($nombre) {
+    $nombre = preg_replace('/\s+/', ' ', trim((string)$nombre));
+    $appat = ''; $apmat = ''; $nombres = '';
+    if (strpos($nombre, ',') !== false) {
+        list($apellidos, $nom) = array_map('trim', explode(',', $nombre, 2));
+        $nombres = $nom;
+        $partes = explode(' ', $apellidos);
+        $appat = isset($partes[0]) ? $partes[0] : '';
+        $apmat = trim(implode(' ', array_slice($partes, 1)));
+    } else {
+        $partes = explode(' ', $nombre);
+        $appat = isset($partes[0]) ? $partes[0] : '';
+        $apmat = isset($partes[1]) ? $partes[1] : '';
+        $nombres = trim(implode(' ', array_slice($partes, 2)));
+    }
+    return [mb_strtoupper($appat, 'UTF-8'), mb_strtoupper($apmat, 'UTF-8'), mb_strtoupper($nombres, 'UTF-8')];
+}
+
+// Parsea una fecha en varios formatos (dd/mm/yyyy, yyyy-mm-dd, serial Excel) → 'Y-m-d' o null.
+function vaca_parse_fecha($v) {
+    $v = trim((string)$v);
+    if ($v === '') return null;
+    if (is_numeric($v) && strpos($v, '/') === false && strpos($v, '-') === false) {
+        $n = (float)$v;
+        if ($n > 59 && $n < 60000) { // serial de Excel (epoch 1899-12-30)
+            $d = DateTime::createFromFormat('Y-m-d', '1899-12-30');
+            $d->modify('+' . (int)$n . ' days');
+            return $d->format('Y-m-d');
+        }
+    }
+    foreach (['d/m/Y', 'd-m-Y', 'Y-m-d', 'Y/m/d', 'd/m/y'] as $f) {
+        $d = DateTime::createFromFormat($f . '|', $v);
+        $e = DateTime::getLastErrors();
+        if ($d && $e['warning_count'] == 0 && $e['error_count'] == 0) {
+            return $d->format('Y-m-d');
+        }
+    }
+    $t = strtotime($v);
+    return $t ? date('Y-m-d', $t) : null;
+}
+
+// Lee las filas de un archivo subido (.xlsx/.xls con PhpSpreadsheet, .csv manual).
+// Devuelve array de filas, cada una array de celdas (strings).
+function vaca_leer_archivo($tmpPath, $nombreOriginal) {
+    $ext = strtolower(pathinfo($nombreOriginal, PATHINFO_EXTENSION));
+    if ($ext === 'csv' || $ext === 'txt') {
+        $filas = [];
+        if (($h = fopen($tmpPath, 'r')) !== false) {
+            $primera = fgets($h);
+            rewind($h);
+            $delim = (substr_count($primera, ';') > substr_count($primera, ',')) ? ';'
+                   : ((strpos($primera, "\t") !== false) ? "\t" : ',');
+            while (($row = fgetcsv($h, 0, $delim)) !== false) $filas[] = $row;
+            fclose($h);
+        }
+        return $filas;
+    }
+    // Excel vía PhpSpreadsheet
+    $autoload = 'spreadsheets/vendor/autoload.php';
+    if (!file_exists($autoload)) $autoload = '../spreadsheets/vendor/autoload.php';
+    require_once $autoload;
+    $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($tmpPath);
+    $reader->setReadDataOnly(true);
+    $spreadsheet = $reader->load($tmpPath);
+    return $spreadsheet->getActiveSheet()->toArray(null, true, true, false);
+}
+
+// Lee filas desde texto pegado (TSV o CSV).
+function vaca_leer_texto($texto) {
+    $filas = [];
+    $lineas = preg_split('/\r\n|\r|\n/', trim((string)$texto));
+    foreach ($lineas as $ln) {
+        if (trim($ln) === '') continue;
+        if (strpos($ln, "\t") !== false)      $filas[] = explode("\t", $ln);
+        else if (strpos($ln, ';') !== false)  $filas[] = explode(';', $ln);
+        else                                   $filas[] = str_getcsv($ln, ',');
+    }
+    return $filas;
+}
+
+// Procesa las filas crudas: resuelve conductor/periodo, valida y marca estado.
+// NO escribe en BD. Devuelve ['filas'=>[...], 'resumen'=>[...]].
+// Columnas esperadas (por posición): 0=Apellidos y Nombres, 3=Periodo,
+// 4=Fecha inicio, 5=Fecha fin, 6=Total (CARGO=1 y REGIMEN=2 son informativos).
+function vaca_procesar_importacion($pdo, $rawRows, $tope) {
+    // Mapas de referencia
+    $conds = $pdo->query(
+        "SELECT id_conductor, appat, apmat, nombres, regimen FROM mp_vaca_conductor WHERE estado = 1"
+    )->fetchAll();
+    $mapCond = [];
+    foreach ($conds as $c) {
+        $key = vaca_norm_txt($c['appat'] . ' ' . $c['apmat'] . ', ' . $c['nombres']);
+        $mapCond[$key] = $c;
+        // clave alterna sin coma
+        $mapCond[vaca_norm_txt($c['appat'] . ' ' . $c['apmat'] . ' ' . $c['nombres'])] = $c;
+    }
+    $cats = $pdo->query("SELECT id_periodo_cat, etiqueta FROM mp_vaca_periodo_cat WHERE estado = 1")->fetchAll();
+    $mapCat = [];
+    foreach ($cats as $c) $mapCat[vaca_norm_txt($c['etiqueta'])] = $c;
+
+    $filas = [];
+    $vistos = [];                 // dedupe intra-archivo: "ckey|cat|fi|ff"
+    $porPeriodo = [];             // acumulado de días por "ckey|cat" (para saldo)
+    $ocupacionNueva = [];         // fecha => set de ckey (para tope)
+    $n_ok = 0; $n_warn = 0; $n_err = 0; $n_dup = 0; $n_nuevo = 0;
+
+    foreach ($rawRows as $i => $r) {
+        if (!is_array($r)) continue;
+        $r = array_values($r);
+        $nombre = isset($r[0]) ? trim((string)$r[0]) : '';
+        $regimen = isset($r[2]) ? trim((string)$r[2]) : '';
+        $periodoTxt = isset($r[3]) ? trim((string)$r[3]) : '';
+        $iniTxt = isset($r[4]) ? trim((string)$r[4]) : '';
+        $finTxt = isset($r[5]) ? trim((string)$r[5]) : '';
+        $totalTxt = isset($r[6]) ? trim((string)$r[6]) : '';
+
+        // Saltar fila vacía o encabezado
+        if ($nombre === '' && $periodoTxt === '' && $iniTxt === '') continue;
+        $nkey = vaca_norm_txt($nombre);
+        if ($nkey === 'APELLIDOS Y NOMBRES' || strpos($nkey, 'APELLIDOS Y NOMBRE') === 0) continue;
+
+        $fila = [
+            'nombre' => $nombre, 'regimen' => $regimen, 'etiqueta' => $periodoTxt,
+            'fi' => null, 'ff' => null, 'dias' => 0, 'total_excel' => $totalTxt,
+            'id_conductor' => null, 'id_periodo_cat' => null,
+            'appat' => '', 'apmat' => '', 'nombres' => '',
+            'estado' => 'ok', 'motivo' => ''
+        ];
+
+        // Conductor: existente o candidato a tercero (nuevo)
+        $cond = isset($mapCond[$nkey]) ? $mapCond[$nkey] : null;
+        $esNuevo = false;
+        if ($cond) {
+            $fila['id_conductor'] = (int)$cond['id_conductor'];
+            $ckey  = (int)$cond['id_conductor'];   // clave para acumular en el archivo
+            $idcSql = (int)$cond['id_conductor'];   // id real para consultas a BD
+        } else {
+            $esNuevo = true;
+            list($ap, $am, $no) = vaca_partir_nombre($nombre);
+            $fila['appat'] = $ap; $fila['apmat'] = $am; $fila['nombres'] = $no;
+            if ($ap === '') {
+                $fila['estado'] = 'error';
+                $fila['motivo'] = 'No se pudo interpretar el nombre para crear el tercero.';
+                $filas[] = $fila; $n_err++; continue;
+            }
+            $ckey  = 'NEW:' . $nkey;                // se agrupa por nombre normalizado
+            $idcSql = -1;                           // no existe en BD todavía
+        }
+
+        // Periodo
+        $cat = isset($mapCat[vaca_norm_txt($periodoTxt)]) ? $mapCat[vaca_norm_txt($periodoTxt)] : null;
+        if (!$cat) {
+            $fila['estado'] = 'error';
+            $fila['motivo'] = 'Periodo "' . $periodoTxt . '" no existe en el catálogo.';
+            $filas[] = $fila; $n_err++; continue;
+        }
+        $fila['id_periodo_cat'] = (int)$cat['id_periodo_cat'];
+        $fila['etiqueta'] = $cat['etiqueta'];
+
+        // Fechas
+        $fi = vaca_parse_fecha($iniTxt);
+        $ff = vaca_parse_fecha($finTxt);
+        if (!$fi || !$ff) {
+            $fila['estado'] = 'error';
+            $fila['motivo'] = 'Fecha inválida (inicio="' . $iniTxt . '", fin="' . $finTxt . '").';
+            $filas[] = $fila; $n_err++; continue;
+        }
+        if ($ff < $fi) {
+            $fila['estado'] = 'error';
+            $fila['motivo'] = 'La fecha de fin es anterior al inicio.';
+            $filas[] = $fila; $n_err++; continue;
+        }
+        $fila['fi'] = $fi; $fila['ff'] = $ff;
+        $di = new DateTime($fi); $df = new DateTime($ff);
+        $dias = (int)$di->diff($df)->days + 1;
+        $fila['dias'] = $dias;
+
+        // Dedupe intra-archivo
+        $dkey = $ckey . '|' . $fila['id_periodo_cat'] . '|' . $fi . '|' . $ff;
+        if (isset($vistos[$dkey])) {
+            $fila['estado'] = 'dup';
+            $fila['motivo'] = 'Fila duplicada dentro del archivo (se omite).';
+            $filas[] = $fila; $n_dup++; continue;
+        }
+        $vistos[$dkey] = true;
+
+        // Duplicado contra la BD (solo aplica a conductores existentes)
+        if (!$esNuevo) {
+            $st = $pdo->prepare(
+                "SELECT COUNT(*) FROM mp_vaca_tramo t
+                 JOIN mp_vaca_periodo p ON p.id_periodo = t.id_periodo
+                 WHERE t.estado='ACTIVO' AND t.id_conductor=? AND p.id_periodo_cat=?
+                   AND t.fecha_inicio=? AND t.fecha_fin=?"
+            );
+            $st->execute([$idcSql, $fila['id_periodo_cat'], $fi, $ff]);
+            if ((int)$st->fetchColumn() > 0) {
+                $fila['estado'] = 'dup';
+                $fila['motivo'] = 'Ya existe este mismo tramo en el sistema (se omite).';
+                $filas[] = $fila; $n_dup++; continue;
+            }
+        }
+
+        // Saldo del periodo (existentes ACTIVOS + acumulado del archivo + este)
+        $pkey = $ckey . '|' . $fila['id_periodo_cat'];
+        if (!isset($porPeriodo[$pkey])) {
+            $base = 0;
+            if (!$esNuevo) {
+                $st = $pdo->prepare(
+                    "SELECT COALESCE(SUM(t.dias),0) FROM mp_vaca_tramo t
+                     JOIN mp_vaca_periodo p ON p.id_periodo = t.id_periodo
+                     WHERE t.estado='ACTIVO' AND t.id_conductor=? AND p.id_periodo_cat=?"
+                );
+                $st->execute([$idcSql, $fila['id_periodo_cat']]);
+                $base = (int)$st->fetchColumn();
+            }
+            $porPeriodo[$pkey] = $base;
+        }
+        if ($porPeriodo[$pkey] + $dias > 30) {
+            $fila['estado'] = 'error';
+            $fila['motivo'] = 'Supera 30 días en el periodo ' . $fila['etiqueta']
+                            . ' (ya suma ' . $porPeriodo[$pkey] . ').';
+            $filas[] = $fila; $n_err++; continue;
+        }
+
+        // Auto-solape del conductor (BD solo si ya existe; siempre contra el acumulado del archivo)
+        $fechas = [];
+        $cur = clone $di;
+        while ($cur <= $df) { $fechas[] = $cur->format('Y-m-d'); $cur->modify('+1 day'); }
+        $solapa = null;
+        foreach ($fechas as $f) {
+            if (isset($ocupacionNueva[$f][$ckey])) { $solapa = $f; break; }
+        }
+        if (!$solapa && !$esNuevo) {
+            $place = implode(',', array_fill(0, count($fechas), '?'));
+            $st = $pdo->prepare(
+                "SELECT fecha FROM mp_vaca_dia WHERE estado='ACTIVO' AND id_conductor=? AND fecha IN ($place) LIMIT 1"
+            );
+            $st->execute(array_merge([$idcSql], $fechas));
+            $solapa = $st->fetchColumn() ?: null;
+        }
+        if ($solapa) {
+            $fila['estado'] = 'error';
+            $fila['motivo'] = 'El conductor ya tiene vacaciones el ' . $solapa . ' (solape).';
+            $filas[] = $fila; $n_err++; continue;
+        }
+
+        // Tope de flota (solo ADVERTENCIA, no bloquea)
+        $diasConflicto = [];
+        foreach ($fechas as $f) {
+            if (!isset($ocupacionNueva[$f])) $ocupacionNueva[$f] = [];
+            $stmt = $pdo->prepare(
+                "SELECT COUNT(DISTINCT id_conductor) FROM mp_vaca_dia
+                 WHERE estado='ACTIVO' AND id_conductor<>? AND fecha=?"
+            );
+            $stmt->execute([$idcSql, $f]);   // idcSql=-1 en terceros → cuenta a todos los demás
+            $baseBD = (int)$stmt->fetchColumn();
+            $otrosArchivo = 0;
+            foreach ($ocupacionNueva[$f] as $cid => $x) if ($cid !== $ckey) $otrosArchivo++;
+            $total = $baseBD + $otrosArchivo + 1;
+            if ($total > $tope) $diasConflicto[] = $f;
+        }
+        foreach ($fechas as $f) $ocupacionNueva[$f][$ckey] = true;
+        $porPeriodo[$pkey] += $dias;
+
+        $avisoTope = !empty($diasConflicto)
+            ? ' Supera el tope de ' . $tope . ' en: ' . implode(', ', $diasConflicto) . '.'
+            : '';
+
+        if ($esNuevo) {
+            $fila['estado'] = 'nuevo';
+            $fila['motivo'] = 'No está en la base; se creará como TERCERO al confirmar.' . $avisoTope;
+            $n_nuevo++;
+        } elseif ($avisoTope !== '') {
+            $fila['estado'] = 'warn';
+            $fila['motivo'] = trim($avisoTope) . ' (se importa igual).';
+            $n_warn++;
+        } else {
+            $n_ok++;
+        }
+        $filas[] = $fila;
+    }
+
+    return [
+        'filas'   => $filas,
+        'resumen' => ['ok' => $n_ok, 'warn' => $n_warn, 'error' => $n_err, 'dup' => $n_dup,
+                      'nuevo' => $n_nuevo, 'importables' => $n_ok + $n_warn, 'total' => count($filas)]
+    ];
+}
+
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 /* ---------------------------------------------------------------------
@@ -169,7 +474,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $like = "%$q%";
         $stmt = $pdo->prepare(
-            "SELECT id_conductor, ndoc, appat, apmat, nombres, regimen,
+            "SELECT id_conductor, ndoc, appat, apmat, nombres, regimen, es_tercero,
                     CONCAT(appat,' ',apmat,', ',nombres) AS nombre_completo
              FROM mp_vaca_conductor
              WHERE estado = 1
@@ -184,7 +489,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($action === 'listar_conductores') {
         $stmt = $pdo->query(
-            "SELECT id_conductor, iden_pers, ndoc, appat, apmat, nombres, regimen, fecha_ingreso,
+            "SELECT id_conductor, iden_pers, ndoc, appat, apmat, nombres, regimen, fecha_ingreso, es_tercero,
                     CONCAT(appat,' ',apmat,', ',nombres) AS nombre_completo
              FROM mp_vaca_conductor
              WHERE estado = 1
@@ -324,6 +629,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $hist[] = $r;
         }
         echo json_encode(['success' => true, 'historial' => $hist]);
+        exit;
+    }
+
+    if ($action === 'obtener_config') {
+        echo json_encode([
+            'success'            => true,
+            'VACA_TOPE_FLOTA'    => vaca_config($pdo, 'VACA_TOPE_FLOTA', 4),
+            'VACA_DIAS_PERIODO'  => vaca_config($pdo, 'VACA_DIAS_PERIODO', 30)
+        ]);
         exit;
     }
 }
@@ -805,6 +1119,255 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Exception $e) {
             if ($pdo->inTransaction()) $pdo->rollBack();
             echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
+        exit;
+    }
+
+    if ($action === 'guardar_config') {
+        $tope = isset($_POST['tope']) ? (int)$_POST['tope'] : 0;
+        $dias = isset($_POST['dias']) ? (int)$_POST['dias'] : 0;
+        if ($tope < 1 || $tope > 37) {
+            echo json_encode(['success' => false, 'error' => 'El tope debe estar entre 1 y 37.']);
+            exit;
+        }
+        try {
+            $set = function($nombre, $valor) use ($pdo) {
+                $st = $pdo->prepare("SELECT COUNT(*) FROM mp_admi_conf WHERE nomb_conf = ?");
+                $st->execute([$nombre]);
+                if ((int)$st->fetchColumn() > 0) {
+                    $pdo->prepare("UPDATE mp_admi_conf SET valo_conf = ? WHERE nomb_conf = ?")
+                        ->execute([$valor, $nombre]);
+                } else {
+                    $pdo->prepare("INSERT INTO mp_admi_conf (nomb_conf, desc_conf, valo_conf) VALUES (?, ?, ?)")
+                        ->execute([$nombre, 'Configuracion del modulo de vacaciones', $valor]);
+                }
+            };
+            $set('VACA_TOPE_FLOTA', (string)$tope);
+            if ($dias >= 1 && $dias <= 60) $set('VACA_DIAS_PERIODO', (string)$dias);
+            echo json_encode(['success' => true, 'message' => 'Configuración actualizada. Tope de flota: ' . $tope . '.']);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'error' => 'Error al guardar: ' . $e->getMessage()]);
+        }
+        exit;
+    }
+
+    if ($action === 'crear_tercero') {
+        $appat = isset($_POST['appat']) ? trim($_POST['appat']) : '';
+        $apmat = isset($_POST['apmat']) ? trim($_POST['apmat']) : '';
+        $nombres = isset($_POST['nombres']) ? trim($_POST['nombres']) : '';
+        $regimen = isset($_POST['regimen']) ? trim($_POST['regimen']) : 'TERCEROS';
+        $ndoc = isset($_POST['ndoc']) ? trim($_POST['ndoc']) : '';
+        $fing = isset($_POST['fecha_ingreso']) ? trim($_POST['fecha_ingreso']) : '';
+
+        if ($appat === '' || $nombres === '') {
+            echo json_encode(['success' => false, 'error' => 'Apellido paterno y nombres son obligatorios.']);
+            exit;
+        }
+        $fingOk = vaca_parse_fecha($fing);
+        try {
+            // Evitar duplicar por nombre normalizado
+            $nk = vaca_norm_txt($appat . ' ' . $apmat . ', ' . $nombres);
+            foreach ($pdo->query("SELECT id_conductor, appat, apmat, nombres FROM mp_vaca_conductor WHERE estado=1")->fetchAll() as $c) {
+                if (vaca_norm_txt($c['appat'] . ' ' . $c['apmat'] . ', ' . $c['nombres']) === $nk) {
+                    echo json_encode(['success' => false, 'error' => 'Ya existe un conductor con ese nombre.']);
+                    exit;
+                }
+            }
+            $st = $pdo->prepare(
+                "INSERT INTO mp_vaca_conductor
+                    (iden_pers, ndoc, appat, apmat, nombres, regimen, fecha_ingreso, es_tercero, estado)
+                 VALUES (NULL, ?, ?, ?, ?, ?, ?, 1, 1)"
+            );
+            $st->execute([
+                substr($ndoc, 0, 8),
+                mb_strtoupper($appat, 'UTF-8'), mb_strtoupper($apmat, 'UTF-8'), mb_strtoupper($nombres, 'UTF-8'),
+                $regimen !== '' ? $regimen : 'TERCEROS',
+                $fingOk ?: date('Y-m-d')
+            ]);
+            echo json_encode(['success' => true, 'message' => 'Tercero registrado.', 'id_conductor' => (int)$pdo->lastInsertId()]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'error' => 'Error al crear el tercero: ' . $e->getMessage()]);
+        }
+        exit;
+    }
+
+    if ($action === 'importar_previsualizar') {
+        try {
+            $rawRows = [];
+            if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK) {
+                $rawRows = vaca_leer_archivo($_FILES['archivo']['tmp_name'], $_FILES['archivo']['name']);
+            } elseif (isset($_POST['pegado']) && trim($_POST['pegado']) !== '') {
+                $rawRows = vaca_leer_texto($_POST['pegado']);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No se recibió archivo ni texto para importar.']);
+                exit;
+            }
+            if (empty($rawRows)) {
+                echo json_encode(['success' => false, 'error' => 'No se pudieron leer filas del origen.']);
+                exit;
+            }
+            $tope = vaca_config($pdo, 'VACA_TOPE_FLOTA', 4);
+            $res = vaca_procesar_importacion($pdo, $rawRows, $tope);
+            echo json_encode([
+                'success' => true,
+                'tope'    => $tope,
+                'filas'   => $res['filas'],
+                'resumen' => $res['resumen']
+            ]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'error' => 'Error al leer el origen: ' . $e->getMessage()]);
+        }
+        exit;
+    }
+
+    if ($action === 'importar_confirmar') {
+        $filasRaw = isset($_POST['filas']) ? $_POST['filas'] : '';
+        $filas = json_decode($filasRaw, true);
+        $idOper = isset($_SESSION['iden_oper']) ? (int)$_SESSION['iden_oper'] : 0;
+        if (!is_array($filas) || count($filas) === 0) {
+            echo json_encode(['success' => false, 'error' => 'No hay filas para confirmar.']);
+            exit;
+        }
+        try {
+            $diasPeriodo = vaca_config($pdo, 'VACA_DIAS_PERIODO', 30);
+            $pdo->beginTransaction();
+
+            $insTramo = $pdo->prepare(
+                "INSERT INTO mp_vaca_tramo (id_periodo, id_conductor, fecha_inicio, fecha_fin, dias, estado, id_oper_reg)
+                 VALUES (?, ?, ?, ?, ?, 'ACTIVO', ?)"
+            );
+            $insDia = $pdo->prepare(
+                "INSERT INTO mp_vaca_dia (id_tramo, id_conductor, id_periodo, fecha, estado)
+                 VALUES (?, ?, ?, ?, 'ACTIVO')"
+            );
+
+            $cachePer = [];      // "idc|idcat" => id_periodo
+            $porPer   = [];      // id_periodo => ['idc','tramos'=>[],'consumidos']
+            $cacheTercero = [];  // nombre normalizado => id_conductor recién creado
+            $importados = 0;
+            $creados = 0;
+            $omitidos = [];
+
+            foreach ($filas as $f) {
+                $idc   = isset($f['id_conductor']) ? (int)$f['id_conductor'] : 0;
+                $idcat = isset($f['id_periodo_cat']) ? (int)$f['id_periodo_cat'] : 0;
+                $fi    = isset($f['fi']) ? trim($f['fi']) : '';
+                $ff    = isset($f['ff']) ? trim($f['ff']) : '';
+                $nombre = isset($f['nombre']) ? $f['nombre'] : ('conductor ' . $idc);
+
+                // Crear el conductor tercero si la fila lo pide y aún no existe
+                if ($idc <= 0 && !empty($f['crear_tercero'])) {
+                    $nk = vaca_norm_txt($nombre);
+                    if (isset($cacheTercero[$nk])) {
+                        $idc = $cacheTercero[$nk];
+                    } else {
+                        $ap = isset($f['appat']) ? trim($f['appat']) : '';
+                        $am = isset($f['apmat']) ? trim($f['apmat']) : '';
+                        $no = isset($f['nombres']) ? trim($f['nombres']) : '';
+                        if ($ap === '' && $no === '') { list($ap, $am, $no) = vaca_partir_nombre($nombre); }
+                        $reg = isset($f['regimen']) ? trim($f['regimen']) : '';
+                        $pdo->prepare(
+                            "INSERT INTO mp_vaca_conductor
+                                (iden_pers, ndoc, appat, apmat, nombres, regimen, fecha_ingreso, es_tercero, estado)
+                             VALUES (NULL, '', ?, ?, ?, ?, CURDATE(), 1, 1)"
+                        )->execute([$ap, $am, $no, $reg]);
+                        $idc = (int)$pdo->lastInsertId();
+                        $cacheTercero[$nk] = $idc;
+                        $creados++;
+                    }
+                }
+
+                $di = DateTime::createFromFormat('Y-m-d', $fi);
+                $df = DateTime::createFromFormat('Y-m-d', $ff);
+                if ($idc <= 0 || $idcat <= 0 || !$di || !$df || $df < $di) {
+                    $omitidos[] = "$nombre: sin conductor o datos inválidos"; continue;
+                }
+                $dias = (int)$di->diff($df)->days + 1;
+
+                // Asegurar la instancia de periodo (crear si falta; bypass ventana en importación)
+                $keyP = $idc . '|' . $idcat;
+                if (!isset($cachePer[$keyP])) {
+                    $st = $pdo->prepare("SELECT id_periodo FROM mp_vaca_periodo WHERE id_conductor=? AND id_periodo_cat=?");
+                    $st->execute([$idc, $idcat]);
+                    $idPer = $st->fetchColumn();
+                    if (!$idPer) {
+                        $stc = $pdo->prepare("SELECT etiqueta FROM mp_vaca_periodo_cat WHERE id_periodo_cat=?");
+                        $stc->execute([$idcat]);
+                        $etq = $stc->fetchColumn();
+                        if (!$etq) { $omitidos[] = "$nombre: periodo inexistente"; continue; }
+                        $pdo->prepare(
+                            "INSERT INTO mp_vaca_periodo (id_conductor, id_periodo_cat, etiqueta, dias_asignados, estado)
+                             VALUES (?, ?, ?, ?, 'INCOMPLETO')"
+                        )->execute([$idc, $idcat, $etq, $diasPeriodo]);
+                        $idPer = (int)$pdo->lastInsertId();
+                    }
+                    $cachePer[$keyP] = (int)$idPer;
+                }
+                $idPer = $cachePer[$keyP];
+
+                // Revalidar saldo dentro de la transacción (refleja inserciones previas)
+                $s = vaca_saldo_periodo($pdo, $idPer);
+                if ($dias > $s['saldo']) {
+                    $omitidos[] = "$nombre ($fi→$ff): excede saldo del periodo"; continue;
+                }
+
+                // Explotar fechas + revalidar solape y duplicado dentro de la transacción
+                $fechas = [];
+                $cur = clone $di;
+                while ($cur <= $df) { $fechas[] = $cur->format('Y-m-d'); $cur->modify('+1 day'); }
+
+                $place = implode(',', array_fill(0, count($fechas), '?'));
+                $st = $pdo->prepare(
+                    "SELECT fecha FROM mp_vaca_dia WHERE estado='ACTIVO' AND id_conductor=? AND fecha IN ($place) LIMIT 1"
+                );
+                $st->execute(array_merge([$idc], $fechas));
+                if ($st->fetchColumn()) { $omitidos[] = "$nombre ($fi→$ff): solape con otra vacación"; continue; }
+
+                $st = $pdo->prepare(
+                    "SELECT COUNT(*) FROM mp_vaca_tramo WHERE estado='ACTIVO' AND id_conductor=? AND id_periodo=? AND fecha_inicio=? AND fecha_fin=?"
+                );
+                $st->execute([$idc, $idPer, $fi, $ff]);
+                if ((int)$st->fetchColumn() > 0) { $omitidos[] = "$nombre ($fi→$ff): duplicado"; continue; }
+
+                // Insertar
+                $insTramo->execute([$idPer, $idc, $fi, $ff, $dias, $idOper]);
+                $idTramo = (int)$pdo->lastInsertId();
+                foreach ($fechas as $fe) $insDia->execute([$idTramo, $idc, $idPer, $fe]);
+                $importados++;
+
+                if (!isset($porPer[$idPer])) $porPer[$idPer] = ['idc' => $idc, 'tramos' => [], 'consumidos' => 0];
+                $porPer[$idPer]['tramos'][] = ['inicio' => $fi, 'fin' => $ff, 'dias' => $dias];
+                $porPer[$idPer]['consumidos'] += $dias;
+            }
+
+            // Recalcular estado + historial por periodo afectado
+            $insHist = $pdo->prepare(
+                "INSERT INTO mp_vaca_historial
+                    (id_conductor, id_periodo, accion, detalle_despues, dias_liberados, dias_consumidos, saldo_resultante, id_oper)
+                 VALUES (?, ?, 'CREA', ?, 0, ?, ?, ?)"
+            );
+            foreach ($porPer as $idPer => $info) {
+                vaca_recalcular_estado($pdo, $idPer);
+                $s = vaca_saldo_periodo($pdo, $idPer);
+                $insHist->execute([
+                    $info['idc'], $idPer, json_encode($info['tramos']),
+                    $info['consumidos'], $s['saldo'], $idOper
+                ]);
+            }
+
+            $pdo->commit();
+            $msg = "Importación completada: $importados tramo(s) cargado(s)";
+            $msg .= $creados > 0 ? ", $creados tercero(s) creado(s)." : ".";
+            echo json_encode([
+                'success'    => true,
+                'message'    => $msg,
+                'importados' => $importados,
+                'creados'    => $creados,
+                'omitidos'   => $omitidos
+            ]);
+        } catch (Exception $e) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
+            echo json_encode(['success' => false, 'error' => 'Error en la importación: ' . $e->getMessage()]);
         }
         exit;
     }

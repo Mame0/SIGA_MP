@@ -4,6 +4,8 @@ Documento de diseño e implementación. Módulo interno dentro de **Abastecimien
 Operado **exclusivamente por la encargada de RR.HH.** (no hay autoservicio para conductores). Prioridad: velocidad de registro, flexibilidad total y control del impacto operativo de la flota.
 
 > Estado: **Fases 0–5 implementadas (módulo completo).** Fase 0 = tablas + catálogo + config. Fase 1 = sincronizar/buscar/listar conductores + `vacaciones_listado.php`. Fase 2 = periodos + tramos con control de saldo + `vacaciones_registro.php`. Fase 3 = motor de tope de flota (`vaca_validar_cupo` integrado en `guardar_programacion` + acción `calendario_ocupacion`) + `vacaciones_calendario.php`; verificado: 5.º conductor el mismo día bloqueado con lista de fechas, calendario muestra ocupación y nombres. Fase 4 = reprogramación en cadena atómica (acción `reprogramar`) + anulación de tramo (`anular_tramo`) + lectura de auditoría (`obtener_historial`), todo con escritura en `mp_vaca_historial`; UI de reprogramar/anular en `vacaciones_registro.php` (modo "Reprogramar todo" + botón anular por tramo) y línea de tiempo en `vacaciones_detalle.php`. Fase 5 = alta de menú/submenú colgando de **Abastecimiento** (`mp_admi_subm.iden_subm=83`, grupo "Vacaciones Conductores" con 5 páginas) + permisos en `mp_admi_role_subm` (rol Admin=2; bloque parametrizado para el rol de RR.HH.) en `DB_SCHEMA_VACACIONES.sql`, y reporte formato Excel (§8) con exportación `.xls` e impresión en `vacaciones_reporte.php`. **Nota:** el SQL de Fase 5 (menú + permisos) debe ejecutarse en la BD para que el módulo aparezca en el menú. Ver convenciones generales del sistema en `CLAUDE.md`.
+>
+> **Fase 6 (mejoras) implementada:** (a) **Carga masiva desde Excel** — `vacaciones_importar.php` (subir `.xlsx/.xls/.csv` con PhpSpreadsheet **o** pegar la tabla) con previsualización fila a fila (OK / advertencia / error / duplicada) y confirmación transaccional; acciones `importar_previsualizar` e `importar_confirmar` + helper `vaca_procesar_importacion`. Empareja conductor por "APELLIDOS Y NOMBRES" y periodo por etiqueta; crea la instancia de periodo si falta (bypass de la ventana §6.4 por ser carga autoritativa); las filas que superan el tope se importan igual **con advertencia** (decisión del usuario). (b) **Tope de flota configurable** — acciones `obtener_config`/`guardar_config` sobre `mp_admi_conf` (`VACA_TOPE_FLOTA`, `VACA_DIAS_PERIODO`) con UI (engranaje) en `vacaciones_calendario.php`; el tope deja de ser fijo en 4. (c) **Choferes terceros** (contratados que NO están en `mp_maes_personal`) — se guardan en la misma `mp_vaca_conductor` con `es_tercero=1` e `iden_pers` NULL (columna nueva + `iden_pers` nullable, con ALTER idempotente; la sincronización no los toca ni borra). El importador marca los nombres no encontrados como **"Nuevo tercero"** con checkbox por fila y los crea al confirmar (`crear_tercero` + parseo de "APELLIDOS Y NOMBRES"); además hay alta manual (botón "Agregar tercero" en `vacaciones_listado.php`, con badge "Tercero" en la grilla).
 
 ---
 
@@ -60,18 +62,19 @@ WHERE codi_carg = 6 AND esta_pers = 1;   -- 6 = 'ASIST. ADM.(CONDUCTOR)' en mp_m
 ```sql
 CREATE TABLE IF NOT EXISTS mp_vaca_conductor (
   id_conductor      INT(11)     NOT NULL AUTO_INCREMENT,
-  iden_pers         INT(11)     NOT NULL,           -- FK mp_maes_personal.iden_pers
-  ndoc              CHAR(8)     NOT NULL,
+  iden_pers         INT(11)     NULL,                -- FK lógica mp_maes_personal.iden_pers (NULL en terceros)
+  ndoc              CHAR(8)     NOT NULL DEFAULT '',
   appat             VARCHAR(60) NOT NULL,
   apmat             VARCHAR(60) NOT NULL,
   nombres           VARCHAR(100) NOT NULL,
-  regimen           VARCHAR(40) NOT NULL,           -- DL.728 / CAS (de mp_maes_regimen_laboral)
+  regimen           VARCHAR(40) NOT NULL,           -- DL.728 / CAS / TERCEROS
   fecha_ingreso     DATE        NOT NULL,
   dias_por_periodo  INT(3)      NOT NULL DEFAULT 30,
+  es_tercero        INT(1)      NOT NULL DEFAULT 0,  -- 1 = chofer tercero (no está en mp_maes_personal)
   estado            INT(1)      NOT NULL DEFAULT 1,
   fecha_reg         DATETIME    NOT NULL,
   PRIMARY KEY (id_conductor),
-  UNIQUE KEY uq_iden_pers (iden_pers)
+  UNIQUE KEY uq_iden_pers (iden_pers)                -- múltiples NULL permitidos
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 Nombre para reporte ("APELLIDOS Y NOMBRES"): `CONCAT(appat,' ',apmat,', ',nombres)` → `CORIMANYA LAZARO, JOSE LUIS JUAN`.
@@ -243,6 +246,7 @@ vacaciones_calendario.php   -- calendario dinámico de concurrencia (reemplaza l
 vacaciones_registro.php     -- alta/reprogramación de tramos de un conductor (typeahead + selección de periodo)
 vacaciones_detalle.php      -- historial de cambios (mp_vaca_historial) por conductor/periodo
 vacaciones_reporte.php      -- reporte formato Excel (§8): una fila por tramo, con filtros + exportación .xls e impresión
+vacaciones_importar.php     -- carga masiva desde Excel (.xlsx/.csv o pegar tabla): previsualiza y confirma
 vacaciones_controller.php   -- API JSON
 DB_SCHEMA_VACACIONES.sql    -- DDL de las 7 tablas/objetos + alta de menú/permisos (Fase 5)
 ```

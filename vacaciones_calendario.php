@@ -36,9 +36,14 @@ require_once 'include/cabecera.php';
 </head>
 <body>
     <header class="header-vaca text-white p-3 mb-3">
-        <div class="container-fluid d-flex align-items-center">
-            <i class="bi bi-calendar3 fs-3 me-2"></i>
-            <h1 class="h4 mb-0">Calendario de Vacaciones de la Flota</h1>
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-calendar3 fs-3 me-2"></i>
+                <h1 class="h4 mb-0">Calendario de Vacaciones de la Flota</h1>
+            </div>
+            <button class="btn btn-light btn-sm fw-bold" id="btnConfig" data-bs-toggle="modal" data-bs-target="#modalConfig">
+                <i class="bi bi-gear"></i> Tope de flota: <span id="topeHeader">4</span>
+            </button>
         </div>
     </header>
 
@@ -73,6 +78,35 @@ require_once 'include/cabecera.php';
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body"><ul id="modalDiaLista" class="mb-0"></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal configuración del tope -->
+    <div class="modal fade" id="modalConfig" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header text-white" style="background:#073A6B">
+            <h5 class="modal-title"><i class="bi bi-gear"></i> Configuración de vacaciones</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div id="cfgAlerta" class="alert d-none py-2"></div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Tope de conductores de vacaciones por día</label>
+              <input type="number" class="form-control" id="cfgTope" min="1" max="37" step="1">
+              <div class="form-text">Máximo de ausencias simultáneas permitidas en toda la flota (por defecto 4).</div>
+            </div>
+            <div class="mb-1">
+              <label class="form-label fw-bold">Días de vacaciones por periodo</label>
+              <input type="number" class="form-control" id="cfgDias" min="1" max="60" step="1">
+              <div class="form-text">Normalmente 30. Cambiarlo afecta el saldo de nuevos periodos.</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="btnGuardarConfig"><i class="bi bi-save"></i> Guardar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -143,12 +177,55 @@ require_once 'include/cabecera.php';
         fetch(`${API}?action=calendario_ocupacion&desde=${desde}&hasta=${hasta}`)
             .then(r => r.json())
             .then(data => {
-                if (data.success) { tope = data.tope; render(data); }
+                if (data.success) {
+                    tope = data.tope;
+                    document.getElementById('topeHeader').textContent = tope;
+                    render(data);
+                }
             });
     }
 
     document.getElementById('btnPrev').onclick = () => { cursor.setMonth(cursor.getMonth()-1); cargar(); };
     document.getElementById('btnNext').onclick = () => { cursor.setMonth(cursor.getMonth()+1); cargar(); };
+
+    /* ---- Configuración del tope de flota ---- */
+    document.getElementById('modalConfig').addEventListener('show.bs.modal', () => {
+        document.getElementById('cfgAlerta').classList.add('d-none');
+        fetch(`${API}?action=obtener_config`)
+            .then(r => r.json())
+            .then(d => {
+                if (d.success) {
+                    document.getElementById('cfgTope').value = d.VACA_TOPE_FLOTA;
+                    document.getElementById('cfgDias').value = d.VACA_DIAS_PERIODO;
+                }
+            });
+    });
+
+    document.getElementById('btnGuardarConfig').onclick = () => {
+        const topeVal = parseInt(document.getElementById('cfgTope').value, 10);
+        const diasVal = parseInt(document.getElementById('cfgDias').value, 10);
+        const al = document.getElementById('cfgAlerta');
+        if (!(topeVal >= 1 && topeVal <= 37)) {
+            al.className = 'alert alert-warning py-2';
+            al.textContent = 'El tope debe estar entre 1 y 37.';
+            return;
+        }
+        const fd = new FormData();
+        fd.append('tope', topeVal);
+        if (diasVal >= 1 && diasVal <= 60) fd.append('dias', diasVal);
+        fetch(`${API}?action=guardar_config`, {method:'POST', body:fd})
+            .then(r => r.json())
+            .then(d => {
+                al.className = 'alert py-2 alert-' + (d.success ? 'success' : 'danger');
+                al.textContent = d.success ? d.message : d.error;
+                if (d.success) {
+                    setTimeout(() => {
+                        bootstrap.Modal.getInstance(document.getElementById('modalConfig')).hide();
+                        cargar();
+                    }, 700);
+                }
+            });
+    };
 
     cargar();
     </script>
